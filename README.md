@@ -1,5 +1,8 @@
 # Soapex
 
+[![Travis build](https://api.travis-ci.org/zdeneksejcek/soapex.svg?branch=master
+"Build Status")](https://api.travis-ci.org/zdeneksejcek/soapex.svg?branch=master)
+
 **TODO: Add description**
 
 ## Installation
