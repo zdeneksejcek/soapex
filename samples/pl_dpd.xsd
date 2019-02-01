@@ -1,0 +1,1499 @@
+<?xml version="1.0" encoding="UTF-8"?><!-- Published by JAX-WS RI at http://jax-ws.dev.java.net. RI's version is JAX-WS RI 2.1.3.3-hudson-757-SNAPSHOT. -->
+<xs:schema xmlns:tns="http://dpdservices.dpd.com.pl/" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0" targetNamespace="http://dpdservices.dpd.com.pl/">
+
+<xs:element name="DPDServiceException" type="tns:DPDServiceException"></xs:element>
+
+<xs:element name="DeniedAccessWSException" type="tns:DeniedAccessWSException"></xs:element>
+
+<xs:element name="Exception" type="tns:Exception"></xs:element>
+
+<xs:element name="SchemaValidationException" type="tns:SchemaValidationException"></xs:element>
+
+<xs:element name="appendParcelsToPackageV1" type="tns:appendParcelsToPackageV1"></xs:element>
+
+<xs:element name="appendParcelsToPackageV1Response" type="tns:appendParcelsToPackageV1Response"></xs:element>
+
+<xs:element name="findPostalCodeV1" type="tns:findPostalCodeV1"></xs:element>
+
+<xs:element name="findPostalCodeV1Response" type="tns:findPostalCodeV1Response"></xs:element>
+
+<xs:element name="generatePackagesNumbersV1" type="tns:generatePackagesNumbersV1"></xs:element>
+
+<xs:element name="generatePackagesNumbersV1Response" type="tns:generatePackagesNumbersV1Response"></xs:element>
+
+<xs:element name="generatePackagesNumbersV2" type="tns:generatePackagesNumbersV2"></xs:element>
+
+<xs:element name="generatePackagesNumbersV2Response" type="tns:generatePackagesNumbersV2Response"></xs:element>
+
+<xs:element name="generatePackagesNumbersV3" type="tns:generatePackagesNumbersV3"></xs:element>
+
+<xs:element name="generatePackagesNumbersV3Response" type="tns:generatePackagesNumbersV3Response"></xs:element>
+
+<xs:element name="generatePackagesNumbersV4" type="tns:generatePackagesNumbersV4"></xs:element>
+
+<xs:element name="generatePackagesNumbersV4Response" type="tns:generatePackagesNumbersV4Response"></xs:element>
+
+<xs:element name="generateProtocolV1" type="tns:generateProtocolV1"></xs:element>
+
+<xs:element name="generateProtocolV1Response" type="tns:generateProtocolV1Response"></xs:element>
+
+<xs:element name="generateProtocolV2" type="tns:generateProtocolV2"></xs:element>
+
+<xs:element name="generateProtocolV2Response" type="tns:generateProtocolV2Response"></xs:element>
+
+<xs:element name="generateProtocolsWithDestinationsV1" type="tns:generateProtocolsWithDestinationsV1"></xs:element>
+
+<xs:element name="generateProtocolsWithDestinationsV1Response" type="tns:generateProtocolsWithDestinationsV1Response"></xs:element>
+
+<xs:element name="generateProtocolsWithDestinationsV2" type="tns:generateProtocolsWithDestinationsV2"></xs:element>
+
+<xs:element name="generateProtocolsWithDestinationsV2Response" type="tns:generateProtocolsWithDestinationsV2Response"></xs:element>
+
+<xs:element name="generateSpedLabelsV1" type="tns:generateSpedLabelsV1"></xs:element>
+
+<xs:element name="generateSpedLabelsV1Response" type="tns:generateSpedLabelsV1Response"></xs:element>
+
+<xs:element name="generateSpedLabelsV2" type="tns:generateSpedLabelsV2"></xs:element>
+
+<xs:element name="generateSpedLabelsV2Response" type="tns:generateSpedLabelsV2Response"></xs:element>
+
+<xs:element name="generateSpedLabelsV3" type="tns:generateSpedLabelsV3"></xs:element>
+
+<xs:element name="generateSpedLabelsV3Response" type="tns:generateSpedLabelsV3Response"></xs:element>
+
+<xs:element name="generateSpedLabelsV4" type="tns:generateSpedLabelsV4"></xs:element>
+
+<xs:element name="generateSpedLabelsV4Response" type="tns:generateSpedLabelsV4Response"></xs:element>
+
+<xs:element name="getCourierOrderAvailabilityV1" type="tns:getCourierOrderAvailabilityV1"></xs:element>
+
+<xs:element name="getCourierOrderAvailabilityV1Response" type="tns:getCourierOrderAvailabilityV1Response"></xs:element>
+
+<xs:element name="importDeliveryBusinessEventV1" type="tns:importDeliveryBusinessEventV1"></xs:element>
+
+<xs:element name="importDeliveryBusinessEventV1Response" type="tns:importDeliveryBusinessEventV1Response"></xs:element>
+
+<xs:element name="packagesPickupCallV1" type="tns:packagesPickupCallV1"></xs:element>
+
+<xs:element name="packagesPickupCallV1Response" type="tns:packagesPickupCallV1Response"></xs:element>
+
+<xs:element name="packagesPickupCallV2" type="tns:packagesPickupCallV2"></xs:element>
+
+<xs:element name="packagesPickupCallV2Response" type="tns:packagesPickupCallV2Response"></xs:element>
+
+<xs:element name="packagesPickupCallV3" type="tns:packagesPickupCallV3"></xs:element>
+
+<xs:element name="packagesPickupCallV3Response" type="tns:packagesPickupCallV3Response"></xs:element>
+
+<xs:element name="packagesPickupCallV4" type="tns:packagesPickupCallV4"></xs:element>
+
+<xs:element name="packagesPickupCallV4Response" type="tns:packagesPickupCallV4Response"></xs:element>
+
+<xs:complexType name="generatePackagesNumbersV1">
+<xs:sequence>
+<xs:element name="openUMLV1" type="tns:openUMLFeV1" minOccurs="0"></xs:element>
+<xs:element name="pkgNumsGenerationPolicyV1" type="tns:pkgNumsGenerationPolicyV1" minOccurs="0"></xs:element>
+<xs:element name="authDataV1" type="tns:authDataV1" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="openUMLFeV1">
+<xs:sequence>
+<xs:element name="packages" type="tns:packageOpenUMLFeV1" nillable="true" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="packageOpenUMLFeV1">
+<xs:sequence>
+<xs:element name="parcels" type="tns:parcelOpenUMLFeV1" nillable="true" minOccurs="0" maxOccurs="unbounded"></xs:element>
+<xs:element name="payerType" type="tns:payerTypeEnumOpenUMLFeV1" minOccurs="0"></xs:element>
+<xs:element name="receiver" type="tns:packageAddressOpenUMLFeV1" minOccurs="0"></xs:element>
+<xs:element name="ref1" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="ref2" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="ref3" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="reference" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="sender" type="tns:packageAddressOpenUMLFeV1" minOccurs="0"></xs:element>
+<xs:element name="services" type="tns:servicesOpenUMLFeV2" minOccurs="0"></xs:element>
+<xs:element name="thirdPartyFID" type="xs:int" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="parcelOpenUMLFeV1">
+<xs:sequence>
+<xs:element name="content" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="customerData1" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="customerData2" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="customerData3" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="reference" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="sizeX" type="xs:int" minOccurs="0"></xs:element>
+<xs:element name="sizeY" type="xs:int" minOccurs="0"></xs:element>
+<xs:element name="sizeZ" type="xs:int" minOccurs="0"></xs:element>
+<xs:element name="weight" type="xs:double" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="packageAddressOpenUMLFeV1">
+<xs:sequence>
+<xs:element name="address" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="city" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="company" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="countryCode" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="email" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="fid" type="xs:int" minOccurs="0"></xs:element>
+<xs:element name="name" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="phone" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="postalCode" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="servicesOpenUMLFeV2">
+<xs:sequence>
+<xs:element name="carryIn" type="tns:serviceCarryInOpenUMLFeV1" minOccurs="0"></xs:element>
+<xs:element name="cod" type="tns:serviceCODOpenUMLFeV1" minOccurs="0"></xs:element>
+<xs:element name="cud" type="tns:serviceCUDOpenUMLeFV1" minOccurs="0"></xs:element>
+<xs:element name="declaredValue" type="tns:serviceDeclaredValueOpenUMLFeV1" minOccurs="0"></xs:element>
+<xs:element name="dedicatedDelivery" type="tns:serviceDedicatedDeliveryOpenUMLFeV1" minOccurs="0"></xs:element>
+<xs:element name="dox" type="tns:servicePalletOpenUMLFeV1" minOccurs="0"></xs:element>
+<xs:element name="duty" type="tns:serviceDutyOpenUMLeFV1" minOccurs="0"></xs:element>
+<xs:element name="guarantee" type="tns:serviceGuaranteeOpenUMLFeV1" minOccurs="0"></xs:element>
+<xs:element name="inPers" type="tns:serviceInPersOpenUMLFeV1" minOccurs="0"></xs:element>
+<xs:element name="pallet" type="tns:servicePalletOpenUMLFeV1" minOccurs="0"></xs:element>
+<xs:element name="privPers" type="tns:servicePrivPersOpenUMLFeV1" minOccurs="0"></xs:element>
+<xs:element name="rod" type="tns:serviceRODOpenUMLFeV1" minOccurs="0"></xs:element>
+<xs:element name="selfCol" type="tns:serviceSelfColOpenUMLFeV1" minOccurs="0"></xs:element>
+<xs:element name="tires" type="tns:serviceTiresOpenUMLFeV1" minOccurs="0"></xs:element>
+<xs:element name="tiresExport" type="tns:serviceTiresExportOpenUMLFeV1" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="serviceCarryInOpenUMLFeV1">
+<xs:sequence></xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="serviceCODOpenUMLFeV1">
+<xs:sequence>
+<xs:element name="amount" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="currency" type="tns:serviceCurrencyEnum" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="serviceCUDOpenUMLeFV1">
+<xs:sequence></xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="serviceDeclaredValueOpenUMLFeV1">
+<xs:sequence>
+<xs:element name="amount" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="currency" type="tns:serviceCurrencyEnum" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="serviceDedicatedDeliveryOpenUMLFeV1">
+<xs:sequence></xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="servicePalletOpenUMLFeV1">
+<xs:sequence></xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="serviceDutyOpenUMLeFV1">
+<xs:sequence></xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="serviceGuaranteeOpenUMLFeV1">
+<xs:sequence>
+<xs:element name="type" type="tns:serviceGuaranteeTypeEnumOpenUMLFeV1" minOccurs="0"></xs:element>
+<xs:element name="value" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="serviceInPersOpenUMLFeV1">
+<xs:sequence></xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="servicePrivPersOpenUMLFeV1">
+<xs:sequence></xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="serviceRODOpenUMLFeV1">
+<xs:sequence></xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="serviceSelfColOpenUMLFeV1">
+<xs:sequence>
+<xs:element name="receiver" type="tns:serviceSelfColReceiverTypeEnumOpenUMLFeV1" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="serviceTiresOpenUMLFeV1">
+<xs:sequence></xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="serviceTiresExportOpenUMLFeV1">
+<xs:sequence></xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="authDataV1">
+<xs:sequence>
+<xs:element name="login" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="masterFid" type="xs:int" minOccurs="0"></xs:element>
+<xs:element name="password" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="generatePackagesNumbersV1Response">
+<xs:sequence>
+<xs:element name="return" type="tns:packagesGenerationResponseV1" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="packagesGenerationResponseV1">
+<xs:complexContent>
+<xs:extension base="tns:sessionPGRV1">
+<xs:sequence></xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="sessionPGRV1">
+<xs:sequence>
+<xs:element name="beginTime" type="xs:dateTime" minOccurs="0"></xs:element>
+<xs:element name="endTime" type="xs:dateTime" minOccurs="0"></xs:element>
+<xs:element name="packages" type="tns:packagePGRV1" nillable="true" minOccurs="0" maxOccurs="unbounded"></xs:element>
+<xs:element name="sessionId" type="xs:long" minOccurs="0"></xs:element>
+<xs:element name="status" type="tns:validationStatusPGREnumV1" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="packagePGRV1">
+<xs:sequence>
+<xs:element name="invalidFields" type="tns:invalidFieldPGRV1" nillable="true" minOccurs="0" maxOccurs="unbounded"></xs:element>
+<xs:element name="packageId" type="xs:long" minOccurs="0"></xs:element>
+<xs:element name="parcels" type="tns:parcelPGRV1" nillable="true" minOccurs="0" maxOccurs="unbounded"></xs:element>
+<xs:element name="reference" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="status" type="tns:validationStatusPGREnumV1" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="invalidFieldPGRV1">
+<xs:sequence>
+<xs:element name="fieldName" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="info" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="status" type="tns:fieldValidationStatusPGREnumV1" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="parcelPGRV1">
+<xs:sequence>
+<xs:element name="parcelId" type="xs:long" minOccurs="0"></xs:element>
+<xs:element name="reference" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="status" type="tns:validationStatusPGREnumV1" minOccurs="0"></xs:element>
+<xs:element name="waybill" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="DPDServiceException">
+<xs:sequence>
+<xs:element name="message" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="packagesPickupCallV4">
+<xs:sequence>
+<xs:element name="dpdPickupParamsV3" type="tns:dpdPickupCallParamsV3" minOccurs="0"></xs:element>
+<xs:element name="authDataV1" type="tns:authDataV1" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="dpdPickupCallParamsV3">
+<xs:sequence>
+<xs:element name="checkSum" type="xs:int" minOccurs="0"></xs:element>
+<xs:element name="operationType" type="tns:pickupCallOperationTypeDPPEnumV1" minOccurs="0"></xs:element>
+<xs:element name="orderNumber" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="orderType" type="tns:pickupCallOrderTypeDPPEnumV1" minOccurs="0"></xs:element>
+<xs:element name="pickupCallSimplifiedDetails" type="tns:pickupCallSimplifiedDetailsDPPV1" minOccurs="0"></xs:element>
+<xs:element name="pickupDate" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="pickupTimeFrom" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="pickupTimeTo" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="updateMode" type="tns:pickupCallUpdateModeDPPEnumV1" minOccurs="0"></xs:element>
+<xs:element name="waybillsReady" type="xs:boolean" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="pickupCallSimplifiedDetailsDPPV1">
+<xs:sequence>
+<xs:element name="packagesParams" type="tns:pickupPackagesParamsDPPV1" minOccurs="0"></xs:element>
+<xs:element name="pickupCustomer" type="tns:pickupCustomerDPPV1" minOccurs="0"></xs:element>
+<xs:element name="pickupPayer" type="tns:pickupPayerDPPV1" minOccurs="0"></xs:element>
+<xs:element name="pickupSender" type="tns:pickupSenderDPPV1" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="pickupPackagesParamsDPPV1">
+<xs:sequence>
+<xs:element name="dox" type="xs:boolean" minOccurs="0"></xs:element>
+<xs:element name="doxCount" type="xs:int" minOccurs="0"></xs:element>
+<xs:element name="pallet" type="xs:boolean" minOccurs="0"></xs:element>
+<xs:element name="palletMaxHeight" type="xs:double" minOccurs="0"></xs:element>
+<xs:element name="palletMaxWeight" type="xs:double" minOccurs="0"></xs:element>
+<xs:element name="palletsCount" type="xs:int" minOccurs="0"></xs:element>
+<xs:element name="palletsWeight" type="xs:double" minOccurs="0"></xs:element>
+<xs:element name="parcelMaxDepth" type="xs:double" minOccurs="0"></xs:element>
+<xs:element name="parcelMaxHeight" type="xs:double" minOccurs="0"></xs:element>
+<xs:element name="parcelMaxWeight" type="xs:double" minOccurs="0"></xs:element>
+<xs:element name="parcelMaxWidth" type="xs:double" minOccurs="0"></xs:element>
+<xs:element name="parcelsCount" type="xs:int" minOccurs="0"></xs:element>
+<xs:element name="parcelsWeight" type="xs:double" minOccurs="0"></xs:element>
+<xs:element name="standardParcel" type="xs:boolean" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="pickupCustomerDPPV1">
+<xs:sequence>
+<xs:element name="customerFullName" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="customerName" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="customerPhone" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="pickupPayerDPPV1">
+<xs:sequence>
+<xs:element name="payerCostCenter" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="payerName" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="payerNumber" type="xs:int" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="pickupSenderDPPV1">
+<xs:sequence>
+<xs:element name="senderAddress" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="senderCity" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="senderFullName" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="senderName" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="senderPhone" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="senderPostalCode" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="packagesPickupCallV4Response">
+<xs:sequence>
+<xs:element name="return" type="tns:packagesPickupCallResponseV3" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="packagesPickupCallResponseV3">
+<xs:sequence>
+<xs:element name="checkSum" type="xs:int" minOccurs="0"></xs:element>
+<xs:element name="orderNumber" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="statusInfo" type="tns:statusInfoPCRV2" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="statusInfoPCRV2">
+<xs:sequence>
+<xs:element name="errorDetails" type="tns:errorDetailsPCRV2" nillable="true" minOccurs="0" maxOccurs="unbounded"></xs:element>
+<xs:element name="status" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="errorDetailsPCRV2">
+<xs:sequence>
+<xs:element name="code" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="description" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="fields" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="packagesPickupCallV3">
+<xs:sequence>
+<xs:element name="dpdPickupParamsV3" type="tns:dpdPickupCallParamsV3" minOccurs="0"></xs:element>
+<xs:element name="authDataV1" type="tns:authDataV1" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="packagesPickupCallV3Response">
+<xs:sequence>
+<xs:element name="return" type="tns:packagesPickupCallResponseV3" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getCourierOrderAvailabilityV1">
+<xs:sequence>
+<xs:element name="senderPlaceV1" type="tns:senderPlaceV1" minOccurs="0"></xs:element>
+<xs:element name="authDataV1" type="tns:authDataV1" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="senderPlaceV1">
+<xs:sequence>
+<xs:element name="countryCode" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="zipCode" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getCourierOrderAvailabilityV1Response">
+<xs:sequence>
+<xs:element name="return" type="tns:getCourierOrderAvailabilityResponseV1" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getCourierOrderAvailabilityResponseV1">
+<xs:sequence>
+<xs:element name="ranges" type="tns:courierOrderAvailabilityRangeV1" nillable="true" minOccurs="0" maxOccurs="unbounded"></xs:element>
+<xs:element name="status" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="courierOrderAvailabilityRangeV1">
+<xs:sequence>
+<xs:element name="offset" type="xs:int" minOccurs="0"></xs:element>
+<xs:element name="range" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="Exception">
+<xs:sequence>
+<xs:element name="message" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="packagesPickupCallV2">
+<xs:sequence>
+<xs:element name="dpdPickupParamsV2" type="tns:dpdPickupCallParamsV2" minOccurs="0"></xs:element>
+<xs:element name="authDataV1" type="tns:authDataV1" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="dpdPickupCallParamsV2">
+<xs:sequence>
+<xs:element name="operationType" type="tns:pickupCallOperationTypeDPPEnumV1" minOccurs="0"></xs:element>
+<xs:element name="orderNumber" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="orderType" type="tns:pickupCallOrderTypeDPPEnumV1" minOccurs="0"></xs:element>
+<xs:element name="pickupCallSimplifiedDetails" type="tns:pickupCallSimplifiedDetailsDPPV1" minOccurs="0"></xs:element>
+<xs:element name="pickupDate" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="pickupTimeFrom" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="pickupTimeTo" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="updateMode" type="tns:pickupCallUpdateModeDPPEnumV1" minOccurs="0"></xs:element>
+<xs:element name="waybillsReady" type="xs:boolean" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="packagesPickupCallV2Response">
+<xs:sequence>
+<xs:element name="return" type="tns:packagesPickupCallResponseV2" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="packagesPickupCallResponseV2">
+<xs:sequence>
+<xs:element name="orderNumber" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="statusInfo" type="tns:statusInfoPCRV2" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="generatePackagesNumbersV4">
+<xs:sequence>
+<xs:element name="openUMLFeV3" type="tns:openUMLFeV3" minOccurs="0"></xs:element>
+<xs:element name="pkgNumsGenerationPolicyV1" type="tns:pkgNumsGenerationPolicyV1" minOccurs="0"></xs:element>
+<xs:element name="langCode" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="authDataV1" type="tns:authDataV1" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="openUMLFeV3">
+<xs:sequence>
+<xs:element name="packages" type="tns:packageOpenUMLFeV3" nillable="true" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="packageOpenUMLFeV3">
+<xs:sequence>
+<xs:element name="parcels" type="tns:parcelOpenUMLFeV1" nillable="true" minOccurs="0" maxOccurs="unbounded"></xs:element>
+<xs:element name="payerType" type="tns:payerTypeEnumOpenUMLFeV1" minOccurs="0"></xs:element>
+<xs:element name="receiver" type="tns:packageAddressOpenUMLFeV1" minOccurs="0"></xs:element>
+<xs:element name="ref1" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="ref2" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="ref3" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="reference" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="sender" type="tns:packageAddressOpenUMLFeV1" minOccurs="0"></xs:element>
+<xs:element name="services" type="tns:servicesOpenUMLFeV4" minOccurs="0"></xs:element>
+<xs:element name="thirdPartyFID" type="xs:int" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="servicesOpenUMLFeV4">
+<xs:sequence>
+<xs:element name="carryIn" type="tns:serviceCarryInOpenUMLFeV1" minOccurs="0"></xs:element>
+<xs:element name="cod" type="tns:serviceCODOpenUMLFeV1" minOccurs="0"></xs:element>
+<xs:element name="cud" type="tns:serviceCUDOpenUMLeFV1" minOccurs="0"></xs:element>
+<xs:element name="declaredValue" type="tns:serviceDeclaredValueOpenUMLFeV1" minOccurs="0"></xs:element>
+<xs:element name="dedicatedDelivery" type="tns:serviceDedicatedDeliveryOpenUMLFeV1" minOccurs="0"></xs:element>
+<xs:element name="documentsInternational" type="tns:serviceFlagOpenUMLF" minOccurs="0"></xs:element>
+<xs:element name="dox" type="tns:servicePalletOpenUMLFeV1" minOccurs="0"></xs:element>
+<xs:element name="dpdExpress" type="tns:serviceFlagOpenUMLF" minOccurs="0"></xs:element>
+<xs:element name="dpdPickup" type="tns:serviceDpdPickupOpenUMLFeV1" minOccurs="0"></xs:element>
+<xs:element name="duty" type="tns:serviceDutyOpenUMLeFV2" minOccurs="0"></xs:element>
+<xs:element name="guarantee" type="tns:serviceGuaranteeOpenUMLFeV1" minOccurs="0"></xs:element>
+<xs:element name="inPers" type="tns:serviceInPersOpenUMLFeV1" minOccurs="0"></xs:element>
+<xs:element name="pallet" type="tns:servicePalletOpenUMLFeV1" minOccurs="0"></xs:element>
+<xs:element name="privPers" type="tns:servicePrivPersOpenUMLFeV1" minOccurs="0"></xs:element>
+<xs:element name="rod" type="tns:serviceRODOpenUMLFeV1" minOccurs="0"></xs:element>
+<xs:element name="selfCol" type="tns:serviceSelfColOpenUMLFeV1" minOccurs="0"></xs:element>
+<xs:element name="tires" type="tns:serviceTiresOpenUMLFeV1" minOccurs="0"></xs:element>
+<xs:element name="tiresExport" type="tns:serviceTiresExportOpenUMLFeV1" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="serviceFlagOpenUMLF">
+<xs:sequence></xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="serviceDpdPickupOpenUMLFeV1">
+<xs:sequence>
+<xs:element name="pudo" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="serviceDutyOpenUMLeFV2">
+<xs:sequence>
+<xs:element name="amount" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="currency" type="tns:serviceCurrencyEnum" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="generatePackagesNumbersV4Response">
+<xs:sequence>
+<xs:element name="return" type="tns:packagesGenerationResponseV2" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="packagesGenerationResponseV2">
+<xs:complexContent>
+<xs:extension base="tns:sessionPGRV2">
+<xs:sequence></xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="sessionPGRV2">
+<xs:sequence>
+<xs:element name="Status" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="SessionId" type="xs:long" minOccurs="0"></xs:element>
+<xs:element name="BeginTime" type="xs:dateTime" minOccurs="0"></xs:element>
+<xs:element name="EndTime" type="xs:dateTime" minOccurs="0"></xs:element>
+<xs:element name="Packages" minOccurs="0">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="Package" type="tns:packagePGRV2" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="packagePGRV2">
+<xs:sequence>
+<xs:element name="Status" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="PackageId" type="xs:long" minOccurs="0"></xs:element>
+<xs:element name="Reference" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="ValidationDetails" minOccurs="0">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="ValidationInfo" type="tns:validationInfoPGRV2" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="Parcels" minOccurs="0">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="Parcel" type="tns:parcelPGRV2" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="validationInfoPGRV2">
+<xs:sequence>
+<xs:element name="ErrorId" type="xs:int"></xs:element>
+<xs:element name="ErrorCode" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="FieldNames" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="Info" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="parcelPGRV2">
+<xs:sequence>
+<xs:element name="Status" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="ParcelId" type="xs:long" minOccurs="0"></xs:element>
+<xs:element name="Reference" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="Waybill" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="ValidationDetails" minOccurs="0">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="ValidationInfo" type="tns:validationInfoPGRV2" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="packagesPickupCallV1">
+<xs:sequence>
+<xs:element name="dpdPickupParamsV1" type="tns:dpdPickupCallParamsV1" minOccurs="0"></xs:element>
+<xs:element name="authDataV1" type="tns:authDataV1" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="dpdPickupCallParamsV1">
+<xs:sequence>
+<xs:element name="contactInfo" type="tns:contactInfoDPPV1" minOccurs="0"></xs:element>
+<xs:element name="pickupAddress" type="tns:pickupAddressDSPV1" minOccurs="0"></xs:element>
+<xs:element name="pickupDate" type="xs:dateTime" minOccurs="0"></xs:element>
+<xs:element name="pickupTimeFrom" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="pickupTimeTo" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="policy" type="tns:policyDPPEnumV1" minOccurs="0"></xs:element>
+<xs:element name="protocols" type="tns:protocolDPPV1" nillable="true" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="contactInfoDPPV1">
+<xs:sequence>
+<xs:element name="comments" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="company" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="email" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="name" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="phone" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="pickupAddressDSPV1">
+<xs:sequence>
+<xs:element name="address" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="city" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="company" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="countryCode" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="email" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="fid" type="xs:int" minOccurs="0"></xs:element>
+<xs:element name="name" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="phone" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="postalCode" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="protocolDPPV1">
+<xs:sequence>
+<xs:element name="documentId" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="packagesPickupCallV1Response">
+<xs:sequence>
+<xs:element name="return" type="tns:packagesPickupCallResponseV1" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="packagesPickupCallResponseV1">
+<xs:sequence>
+<xs:element name="orderNumber" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="prototocols" type="tns:protocolPCRV1" nillable="true" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="protocolPCRV1">
+<xs:sequence>
+<xs:element name="documentId" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="statusInfo" type="tns:statusInfoPCRV1" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="statusInfoPCRV1">
+<xs:sequence>
+<xs:element name="description" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="status" type="tns:statusPCREnumV1" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="generatePackagesNumbersV2">
+<xs:sequence>
+<xs:element name="openUMLV1" type="tns:openUMLFeV1" minOccurs="0"></xs:element>
+<xs:element name="pkgNumsGenerationPolicyV1" type="tns:pkgNumsGenerationPolicyV1" minOccurs="0"></xs:element>
+<xs:element name="langCode" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="authDataV1" type="tns:authDataV1" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="generatePackagesNumbersV2Response">
+<xs:sequence>
+<xs:element name="return" type="tns:packagesGenerationResponseV2" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="appendParcelsToPackageV1">
+<xs:sequence>
+<xs:element name="parcelsAppend" type="tns:parcelsAppendV1" minOccurs="0"></xs:element>
+<xs:element name="authDataV1" type="tns:authDataV1" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="parcelsAppendV1">
+<xs:sequence>
+<xs:element name="packagesearchCriteria" type="tns:parcelsAppendSearchCriteriaPAV1" minOccurs="0"></xs:element>
+<xs:element name="parcels" type="tns:parcelAppendPAV1" nillable="true" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="parcelsAppendSearchCriteriaPAV1">
+<xs:sequence>
+<xs:element name="packageId" type="xs:long"></xs:element>
+<xs:element name="reference" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="waybill" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="parcelAppendPAV1">
+<xs:sequence>
+<xs:element name="content" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="customerData1" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="customerData2" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="customerData3" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="reference" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="sizeX" type="xs:int" minOccurs="0"></xs:element>
+<xs:element name="sizeY" type="xs:int" minOccurs="0"></xs:element>
+<xs:element name="sizeZ" type="xs:int" minOccurs="0"></xs:element>
+<xs:element name="weight" type="xs:double" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="appendParcelsToPackageV1Response">
+<xs:sequence>
+<xs:element name="return" type="tns:parcelsAppendResponseV1" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="parcelsAppendResponseV1">
+<xs:sequence>
+<xs:element name="invalidFields" type="tns:invalidFieldPAV1" nillable="true" minOccurs="0" maxOccurs="unbounded"></xs:element>
+<xs:element name="parcels" type="tns:parcelsAppendParcelPAV1" nillable="true" minOccurs="0" maxOccurs="unbounded"></xs:element>
+<xs:element name="status" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="invalidFieldPAV1">
+<xs:sequence>
+<xs:element name="fieldName" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="info" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="status" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="parcelsAppendParcelPAV1">
+<xs:sequence>
+<xs:element name="parcelId" type="xs:long"></xs:element>
+<xs:element name="reference" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="status" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="waybill" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="generatePackagesNumbersV3">
+<xs:sequence>
+<xs:element name="openUMLFeV2" type="tns:openUMLFeV2" minOccurs="0"></xs:element>
+<xs:element name="pkgNumsGenerationPolicyV1" type="tns:pkgNumsGenerationPolicyV1" minOccurs="0"></xs:element>
+<xs:element name="langCode" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="authDataV1" type="tns:authDataV1" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="openUMLFeV2">
+<xs:sequence>
+<xs:element name="packages" type="tns:packageOpenUMLFeV2" nillable="true" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="packageOpenUMLFeV2">
+<xs:sequence>
+<xs:element name="parcels" type="tns:parcelOpenUMLFeV1" nillable="true" minOccurs="0" maxOccurs="unbounded"></xs:element>
+<xs:element name="payerType" type="tns:payerTypeEnumOpenUMLFeV1" minOccurs="0"></xs:element>
+<xs:element name="receiver" type="tns:packageAddressOpenUMLFeV1" minOccurs="0"></xs:element>
+<xs:element name="ref1" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="ref2" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="ref3" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="reference" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="sender" type="tns:packageAddressOpenUMLFeV1" minOccurs="0"></xs:element>
+<xs:element name="services" type="tns:servicesOpenUMLFeV3" minOccurs="0"></xs:element>
+<xs:element name="thirdPartyFID" type="xs:int" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="servicesOpenUMLFeV3">
+<xs:sequence>
+<xs:element name="carryIn" type="tns:serviceCarryInOpenUMLFeV1" minOccurs="0"></xs:element>
+<xs:element name="cod" type="tns:serviceCODOpenUMLFeV1" minOccurs="0"></xs:element>
+<xs:element name="cud" type="tns:serviceCUDOpenUMLeFV1" minOccurs="0"></xs:element>
+<xs:element name="declaredValue" type="tns:serviceDeclaredValueOpenUMLFeV1" minOccurs="0"></xs:element>
+<xs:element name="dedicatedDelivery" type="tns:serviceDedicatedDeliveryOpenUMLFeV1" minOccurs="0"></xs:element>
+<xs:element name="dox" type="tns:servicePalletOpenUMLFeV1" minOccurs="0"></xs:element>
+<xs:element name="dpdPickup" type="tns:serviceDpdPickupOpenUMLFeV1" minOccurs="0"></xs:element>
+<xs:element name="duty" type="tns:serviceDutyOpenUMLeFV1" minOccurs="0"></xs:element>
+<xs:element name="guarantee" type="tns:serviceGuaranteeOpenUMLFeV1" minOccurs="0"></xs:element>
+<xs:element name="inPers" type="tns:serviceInPersOpenUMLFeV1" minOccurs="0"></xs:element>
+<xs:element name="pallet" type="tns:servicePalletOpenUMLFeV1" minOccurs="0"></xs:element>
+<xs:element name="privPers" type="tns:servicePrivPersOpenUMLFeV1" minOccurs="0"></xs:element>
+<xs:element name="rod" type="tns:serviceRODOpenUMLFeV1" minOccurs="0"></xs:element>
+<xs:element name="selfCol" type="tns:serviceSelfColOpenUMLFeV1" minOccurs="0"></xs:element>
+<xs:element name="tires" type="tns:serviceTiresOpenUMLFeV1" minOccurs="0"></xs:element>
+<xs:element name="tiresExport" type="tns:serviceTiresExportOpenUMLFeV1" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="generatePackagesNumbersV3Response">
+<xs:sequence>
+<xs:element name="return" type="tns:packagesGenerationResponseV2" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="importDeliveryBusinessEventV1">
+<xs:sequence>
+<xs:element name="dpdParcelBusinessEventV1" type="tns:dpdParcelBusinessEventV1" minOccurs="0"></xs:element>
+<xs:element name="authDataV1" type="tns:authDataV1" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="dpdParcelBusinessEventV1">
+<xs:sequence>
+<xs:element name="countryCode" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="eventCode" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="eventDataList" type="tns:dpdParcelBusinessEventDataV1" nillable="true" minOccurs="0" maxOccurs="unbounded"></xs:element>
+<xs:element name="eventTime" type="xs:dateTime" minOccurs="0"></xs:element>
+<xs:element name="postalCode" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="waybill" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="dpdParcelBusinessEventDataV1">
+<xs:sequence>
+<xs:element name="code" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="value" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="importDeliveryBusinessEventV1Response">
+<xs:sequence>
+<xs:element name="return" type="tns:importDeliveryBusinessEventResponseV1" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="importDeliveryBusinessEventResponseV1">
+<xs:sequence>
+<xs:element name="description" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="status" type="tns:importDeliveryBusinessEventStatusEnumV1" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="DeniedAccessWSException">
+<xs:sequence>
+<xs:element name="errorCode" type="xs:int"></xs:element>
+<xs:element name="exceptionDetails" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="message" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="SchemaValidationException">
+<xs:sequence>
+<xs:element name="message" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="generateSpedLabelsV1">
+<xs:sequence>
+<xs:element name="dpdServicesParamsV1" type="tns:dpdServicesParamsV1" minOccurs="0"></xs:element>
+<xs:element name="outputDocFormatV1" type="tns:outputDocFormatDSPEnumV1" minOccurs="0"></xs:element>
+<xs:element name="outputDocPageFormatV1" type="tns:outputDocPageFormatDSPEnumV1" minOccurs="0"></xs:element>
+<xs:element name="authDataV1" type="tns:authDataV1" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="dpdServicesParamsV1">
+<xs:sequence>
+<xs:element name="documentId" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="pickupAddress" type="tns:pickupAddressDSPV1" minOccurs="0"></xs:element>
+<xs:element name="policy" type="tns:policyDSPEnumV1" minOccurs="0"></xs:element>
+<xs:element name="session" type="tns:sessionDSPV1" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="sessionDSPV1">
+<xs:sequence>
+<xs:element name="packages" type="tns:packageDSPV1" nillable="true" minOccurs="0" maxOccurs="unbounded"></xs:element>
+<xs:element name="sessionId" type="xs:long" minOccurs="0"></xs:element>
+<xs:element name="sessionType" type="tns:sessionTypeDSPEnumV1" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="packageDSPV1">
+<xs:sequence>
+<xs:element name="packageId" type="xs:long" minOccurs="0"></xs:element>
+<xs:element name="parcels" type="tns:parcelDSPV1" nillable="true" minOccurs="0" maxOccurs="unbounded"></xs:element>
+<xs:element name="reference" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="parcelDSPV1">
+<xs:sequence>
+<xs:element name="parcelId" type="xs:long" minOccurs="0"></xs:element>
+<xs:element name="reference" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="waybill" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="generateSpedLabelsV1Response">
+<xs:sequence>
+<xs:element name="return" type="tns:documentGenerationResponseV1" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="documentGenerationResponseV1">
+<xs:sequence>
+<xs:element name="documentData" type="xs:base64Binary" minOccurs="0"></xs:element>
+<xs:element name="documentId" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="session" type="tns:sessionDGRV1" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="sessionDGRV1">
+<xs:sequence>
+<xs:element name="packages" type="tns:packageDGRV1" nillable="true" minOccurs="0" maxOccurs="unbounded"></xs:element>
+<xs:element name="sessionId" type="xs:long" minOccurs="0"></xs:element>
+<xs:element name="statusInfo" type="tns:statusInfoDGRV1" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="packageDGRV1">
+<xs:sequence>
+<xs:element name="packageId" type="xs:long" minOccurs="0"></xs:element>
+<xs:element name="parcels" type="tns:parcelDGRV1" nillable="true" minOccurs="0" maxOccurs="unbounded"></xs:element>
+<xs:element name="reference" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="statusInfo" type="tns:statusInfoDGRV1" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="parcelDGRV1">
+<xs:sequence>
+<xs:element name="parcelId" type="xs:long" minOccurs="0"></xs:element>
+<xs:element name="reference" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="statusInfo" type="tns:statusInfoDGRV1" minOccurs="0"></xs:element>
+<xs:element name="waybill" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="statusInfoDGRV1">
+<xs:sequence>
+<xs:element name="description" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="status" type="tns:statusDGREnumV1" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="findPostalCodeV1">
+<xs:sequence>
+<xs:element name="postalCodeV1" type="tns:postalCodeV1" minOccurs="0"></xs:element>
+<xs:element name="authDataV1" type="tns:authDataV1" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="postalCodeV1">
+<xs:sequence>
+<xs:element name="countryCode" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="zipCode" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="findPostalCodeV1Response">
+<xs:sequence>
+<xs:element name="return" type="tns:findPostalCodeResponseV1" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="findPostalCodeResponseV1">
+<xs:sequence>
+<xs:element name="status" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="generateProtocolV1">
+<xs:sequence>
+<xs:element name="dpdServicesParamsV1" type="tns:dpdServicesParamsV1" minOccurs="0"></xs:element>
+<xs:element name="outputDocFormatV1" type="tns:outputDocFormatDSPEnumV1" minOccurs="0"></xs:element>
+<xs:element name="outputDocPageFormatV1" type="tns:outputDocPageFormatDSPEnumV1" minOccurs="0"></xs:element>
+<xs:element name="authDataV1" type="tns:authDataV1" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="generateProtocolV1Response">
+<xs:sequence>
+<xs:element name="return" type="tns:documentGenerationResponseV1" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="generateProtocolsWithDestinationsV2">
+<xs:sequence>
+<xs:element name="dpdServicesParamsV2" type="tns:dpdServicesParamsV2" minOccurs="0"></xs:element>
+<xs:element name="authDataV1" type="tns:authDataV1" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="dpdServicesParamsV2">
+<xs:sequence>
+<xs:element name="Policy" type="tns:policyDSPEnumV2" minOccurs="0"></xs:element>
+<xs:element name="Session" type="tns:sessionDSPV2" minOccurs="0"></xs:element>
+<xs:element name="PickupAddress" type="tns:pickupAddressDSPV2" minOccurs="0"></xs:element>
+<xs:element name="DeliveryDestinations" minOccurs="0">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="DeliveryDestination" type="tns:deliveryDestination" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="GenProtForNonMatching" type="xs:boolean" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="sessionDSPV2">
+<xs:sequence>
+<xs:element name="Packages" minOccurs="0">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="Package" type="tns:packageDSPV2" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="SessionId" type="xs:long" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="packageDSPV2">
+<xs:sequence>
+<xs:element name="PackageId" type="xs:long" minOccurs="0"></xs:element>
+<xs:element name="Parcels" minOccurs="0">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="Parcel" type="tns:parcelDSPV2" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="Reference" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="parcelDSPV2">
+<xs:sequence>
+<xs:element name="ParcelId" type="xs:long" minOccurs="0"></xs:element>
+<xs:element name="Reference" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="Waybill" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="pickupAddressDSPV2">
+<xs:sequence>
+<xs:element name="Address" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="City" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="Company" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="CountryCode" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="Email" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="Fid" type="xs:int" minOccurs="0"></xs:element>
+<xs:element name="Name" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="Phone" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="PostalCode" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="deliveryDestination">
+<xs:sequence>
+<xs:element name="DepotList" minOccurs="0">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="ProtocolDepot" type="tns:protocolDepot" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="DestinationName" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="protocolDepot">
+<xs:sequence>
+<xs:element name="Number" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="generateProtocolsWithDestinationsV2Response">
+<xs:sequence>
+<xs:element name="return" type="tns:documentGenerationResponseV2" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="documentGenerationResponseV2">
+<xs:sequence>
+<xs:element name="DestinationDataList" minOccurs="0">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="DestinationsData" type="tns:destinationsData" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="DocumentData" type="xs:base64Binary" minOccurs="0"></xs:element>
+<xs:element name="nonMatchingDataList" type="tns:nonMatchingData" nillable="true" minOccurs="0" maxOccurs="unbounded"></xs:element>
+<xs:element name="Session" type="tns:sessionDGRV2" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="destinationsData">
+<xs:sequence>
+<xs:element name="DestinationName" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="DocumentId" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="Domestic" type="xs:boolean" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="nonMatchingData">
+<xs:sequence>
+<xs:element name="waybill" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="sessionDGRV2">
+<xs:sequence>
+<xs:element name="Packages" minOccurs="0">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="Package" type="tns:packageDGRV2" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="SessionId" type="xs:long" minOccurs="0"></xs:element>
+<xs:element name="StatusInfo" type="tns:statusInfoDGRV2" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="packageDGRV2">
+<xs:sequence>
+<xs:element name="packageId" type="xs:long" minOccurs="0"></xs:element>
+<xs:element name="parcels" type="tns:parcelDGRV2" nillable="true" minOccurs="0" maxOccurs="unbounded"></xs:element>
+<xs:element name="reference" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="statusInfo" type="tns:statusInfoDGRV2" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="parcelDGRV2">
+<xs:sequence>
+<xs:element name="parcelId" type="xs:long" minOccurs="0"></xs:element>
+<xs:element name="reference" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="statusInfo" type="tns:statusInfoDGRV2" minOccurs="0"></xs:element>
+<xs:element name="waybill" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="statusInfoDGRV2">
+<xs:sequence>
+<xs:element name="Description" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="Status" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="generateSpedLabelsV4">
+<xs:sequence>
+<xs:element name="dpdServicesParamsV1" type="tns:dpdServicesParamsV1" minOccurs="0"></xs:element>
+<xs:element name="outputDocFormatV1" type="tns:outputDocFormatDSPEnumV1" minOccurs="0"></xs:element>
+<xs:element name="outputDocPageFormatV1" type="tns:outputDocPageFormatDSPEnumV1" minOccurs="0"></xs:element>
+<xs:element name="outputLabelType" type="tns:outputLabelTypeEnumV1" minOccurs="0"></xs:element>
+<xs:element name="labelVariant" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="authDataV1" type="tns:authDataV1" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="generateSpedLabelsV4Response">
+<xs:sequence>
+<xs:element name="return" type="tns:documentGenerationResponseV1" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="generateProtocolV2">
+<xs:sequence>
+<xs:element name="dpdServicesParamsV1" type="tns:dpdServicesParamsV1" minOccurs="0"></xs:element>
+<xs:element name="outputDocFormatV1" type="tns:outputDocFormatDSPEnumV1" minOccurs="0"></xs:element>
+<xs:element name="outputDocPageFormatV1" type="tns:outputDocPageFormatDSPEnumV1" minOccurs="0"></xs:element>
+<xs:element name="authDataV1" type="tns:authDataV1" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="generateProtocolV2Response">
+<xs:sequence>
+<xs:element name="return" type="tns:documentGenerationResponseV1" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="generateProtocolsWithDestinationsV1">
+<xs:sequence>
+<xs:element name="dpdServicesParamsV2" type="tns:dpdServicesParamsV2" minOccurs="0"></xs:element>
+<xs:element name="authDataV1" type="tns:authDataV1" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="generateProtocolsWithDestinationsV1Response">
+<xs:sequence>
+<xs:element name="return" type="tns:documentGenerationResponseV2" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="generateSpedLabelsV3">
+<xs:sequence>
+<xs:element name="dpdServicesParamsV1" type="tns:dpdServicesParamsV1" minOccurs="0"></xs:element>
+<xs:element name="outputDocFormatV1" type="tns:outputDocFormatDSPEnumV1" minOccurs="0"></xs:element>
+<xs:element name="outputDocPageFormatV1" type="tns:outputDocPageFormatDSPEnumV1" minOccurs="0"></xs:element>
+<xs:element name="outputLabelType" type="tns:outputLabelTypeEnumV1" minOccurs="0"></xs:element>
+<xs:element name="labelVariant" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="authDataV1" type="tns:authDataV1" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="generateSpedLabelsV3Response">
+<xs:sequence>
+<xs:element name="return" type="tns:documentGenerationResponseV1" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="generateSpedLabelsV2">
+<xs:sequence>
+<xs:element name="dpdServicesParamsV1" type="tns:dpdServicesParamsV1" minOccurs="0"></xs:element>
+<xs:element name="outputDocFormatV1" type="tns:outputDocFormatDSPEnumV1" minOccurs="0"></xs:element>
+<xs:element name="outputDocPageFormatV1" type="tns:outputDocPageFormatDSPEnumV1" minOccurs="0"></xs:element>
+<xs:element name="outputLabelTypeV2" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="authDataV1" type="tns:authDataV1" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="generateSpedLabelsV2Response">
+<xs:sequence>
+<xs:element name="return" type="tns:documentGenerationResponseV1" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:simpleType name="payerTypeEnumOpenUMLFeV1">
+<xs:restriction base="xs:string">
+<xs:enumeration value="RECEIVER"></xs:enumeration>
+<xs:enumeration value="SENDER"></xs:enumeration>
+<xs:enumeration value="THIRD_PARTY"></xs:enumeration>
+</xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="serviceCurrencyEnum">
+<xs:restriction base="xs:string">
+<xs:enumeration value="PLN"></xs:enumeration>
+<xs:enumeration value="EUR"></xs:enumeration>
+<xs:enumeration value="USD"></xs:enumeration>
+<xs:enumeration value="CHF"></xs:enumeration>
+<xs:enumeration value="SEK"></xs:enumeration>
+<xs:enumeration value="NOK"></xs:enumeration>
+<xs:enumeration value="CZK"></xs:enumeration>
+<xs:enumeration value="RON"></xs:enumeration>
+<xs:enumeration value="HUF"></xs:enumeration>
+<xs:enumeration value="HRK"></xs:enumeration>
+<xs:enumeration value="BGN"></xs:enumeration>
+<xs:enumeration value="DKK"></xs:enumeration>
+<xs:enumeration value="GBP"></xs:enumeration>
+<xs:enumeration value="RSD"></xs:enumeration>
+<xs:enumeration value="RUB"></xs:enumeration>
+<xs:enumeration value="TRY"></xs:enumeration>
+<xs:enumeration value="UNKNOWN"></xs:enumeration>
+</xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="serviceGuaranteeTypeEnumOpenUMLFeV1">
+<xs:restriction base="xs:string">
+<xs:enumeration value="TIME0930"></xs:enumeration>
+<xs:enumeration value="TIME1200"></xs:enumeration>
+<xs:enumeration value="B2C"></xs:enumeration>
+<xs:enumeration value="TIMEFIXED"></xs:enumeration>
+<xs:enumeration value="SATURDAY"></xs:enumeration>
+<xs:enumeration value="INTER"></xs:enumeration>
+<xs:enumeration value="DPDNEXTDAY"></xs:enumeration>
+</xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="serviceSelfColReceiverTypeEnumOpenUMLFeV1">
+<xs:restriction base="xs:string">
+<xs:enumeration value="PRIV"></xs:enumeration>
+<xs:enumeration value="COMP"></xs:enumeration>
+</xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="pkgNumsGenerationPolicyV1">
+<xs:restriction base="xs:string">
+<xs:enumeration value="STOP_ON_FIRST_ERROR"></xs:enumeration>
+<xs:enumeration value="IGNORE_ERRORS"></xs:enumeration>
+<xs:enumeration value="ALL_OR_NOTHING"></xs:enumeration>
+</xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="fieldValidationStatusPGREnumV1">
+<xs:restriction base="xs:string">
+<xs:enumeration value="OK"></xs:enumeration>
+<xs:enumeration value="UNKNOWN_ERROR"></xs:enumeration>
+<xs:enumeration value="DB_ERROR"></xs:enumeration>
+<xs:enumeration value="DONT_MATCH_DICTIONARY"></xs:enumeration>
+<xs:enumeration value="DONT_MATCH_PATTERN"></xs:enumeration>
+<xs:enumeration value="VALUE_EMPTY"></xs:enumeration>
+<xs:enumeration value="VALUE_ZERO"></xs:enumeration>
+<xs:enumeration value="VALUE_OUT_OF_RANGE"></xs:enumeration>
+<xs:enumeration value="VALUE_INCORRECT"></xs:enumeration>
+<xs:enumeration value="UNKNOWN_RDB_ERROR"></xs:enumeration>
+<xs:enumeration value="DUPLICATED_KEY"></xs:enumeration>
+</xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="validationStatusPGREnumV1">
+<xs:restriction base="xs:string">
+<xs:enumeration value="OK"></xs:enumeration>
+<xs:enumeration value="UNKNOWN_ERROR"></xs:enumeration>
+<xs:enumeration value="DB_ERROR"></xs:enumeration>
+<xs:enumeration value="INCORRECT_DATA"></xs:enumeration>
+<xs:enumeration value="NOT_PROCESSED"></xs:enumeration>
+<xs:enumeration value="DUPLICATED_PACKAGE_SEARCH_KEY"></xs:enumeration>
+<xs:enumeration value="DUPLICATED_PARCEL_SEARCH_KEY"></xs:enumeration>
+<xs:enumeration value="DISALLOWED_FID"></xs:enumeration>
+<xs:enumeration value="DUPLICATED_WAYBILL"></xs:enumeration>
+<xs:enumeration value="UNSUPPORTED_LANG_CODE"></xs:enumeration>
+</xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="pickupCallOperationTypeDPPEnumV1">
+<xs:restriction base="xs:string">
+<xs:enumeration value="INSERT"></xs:enumeration>
+<xs:enumeration value="UPDATE"></xs:enumeration>
+<xs:enumeration value="CANCEL"></xs:enumeration>
+</xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="pickupCallOrderTypeDPPEnumV1">
+<xs:restriction base="xs:string">
+<xs:enumeration value="DOMESTIC"></xs:enumeration>
+<xs:enumeration value="INTERNATIONAL"></xs:enumeration>
+<xs:enumeration value="EXPRESS"></xs:enumeration>
+</xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="pickupCallUpdateModeDPPEnumV1">
+<xs:restriction base="xs:string">
+<xs:enumeration value="DONT_CREATE_NEW_IF_CLOSED"></xs:enumeration>
+<xs:enumeration value="CREATE_NEW_IF_CLOSED"></xs:enumeration>
+</xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="policyDPPEnumV1">
+<xs:restriction base="xs:string">
+<xs:enumeration value="STOP_ON_FIRST_ERROR"></xs:enumeration>
+<xs:enumeration value="IGNORE_ERRORS"></xs:enumeration>
+</xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="statusPCREnumV1">
+<xs:restriction base="xs:string">
+<xs:enumeration value="OK"></xs:enumeration>
+<xs:enumeration value="NOT_FOUND"></xs:enumeration>
+<xs:enumeration value="NOT_PROCESSED"></xs:enumeration>
+<xs:enumeration value="INCORRECT_PICKUP_ADDRESS_FID"></xs:enumeration>
+<xs:enumeration value="INCORRECT_PICKUP_ADDRESS_NAME"></xs:enumeration>
+<xs:enumeration value="INCORRECT_PICKUP_ADDRESS_COMPANY"></xs:enumeration>
+<xs:enumeration value="INCORRECT_PICKUP_ADDRESS_ADDRESS"></xs:enumeration>
+<xs:enumeration value="INCORRECT_PICKUP_ADDRESS_CITY"></xs:enumeration>
+<xs:enumeration value="INCORRECT_PICKUP_ADDRESS_COUNTRY"></xs:enumeration>
+<xs:enumeration value="INCORRECT_PICKUP_ADDRESS_POSTAL_CODE"></xs:enumeration>
+<xs:enumeration value="INCORRECT_PICKUP_ADDRESS_EMAIL"></xs:enumeration>
+<xs:enumeration value="INCORRECT_PICKUP_ADDRESS_PHONE"></xs:enumeration>
+<xs:enumeration value="ACCESS_DENIED_FOR_FID"></xs:enumeration>
+<xs:enumeration value="UNKNOWN_ERROR"></xs:enumeration>
+<xs:enumeration value="DB_ERROR"></xs:enumeration>
+<xs:enumeration value="RANGE_NOT_AVAILABLE_TEMPORARILY"></xs:enumeration>
+</xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="importDeliveryBusinessEventStatusEnumV1">
+<xs:restriction base="xs:string">
+<xs:enumeration value="OK"></xs:enumeration>
+<xs:enumeration value="UNKNOWN_ERROR"></xs:enumeration>
+<xs:enumeration value="PARCEL_NOT_FOUND"></xs:enumeration>
+<xs:enumeration value="PARCEL_PERMISSION_DENIED"></xs:enumeration>
+<xs:enumeration value="EVENT_PERMISSION_DENIED"></xs:enumeration>
+<xs:enumeration value="INCORRECT_DATA"></xs:enumeration>
+</xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="policyDSPEnumV1">
+<xs:restriction base="xs:string">
+<xs:enumeration value="STOP_ON_FIRST_ERROR"></xs:enumeration>
+<xs:enumeration value="IGNORE_ERRORS"></xs:enumeration>
+</xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="sessionTypeDSPEnumV1">
+<xs:restriction base="xs:string">
+<xs:enumeration value="DOMESTIC"></xs:enumeration>
+<xs:enumeration value="INTERNATIONAL"></xs:enumeration>
+</xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="outputDocFormatDSPEnumV1">
+<xs:restriction base="xs:string">
+<xs:enumeration value="PDF"></xs:enumeration>
+<xs:enumeration value="TIFF"></xs:enumeration>
+<xs:enumeration value="PS"></xs:enumeration>
+<xs:enumeration value="EPL"></xs:enumeration>
+<xs:enumeration value="ZPL"></xs:enumeration>
+</xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="outputDocPageFormatDSPEnumV1">
+<xs:restriction base="xs:string">
+<xs:enumeration value="A4"></xs:enumeration>
+<xs:enumeration value="LBL_PRINTER"></xs:enumeration>
+</xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="statusDGREnumV1">
+<xs:restriction base="xs:string">
+<xs:enumeration value="OK"></xs:enumeration>
+<xs:enumeration value="NOT_FOUND"></xs:enumeration>
+<xs:enumeration value="NOT_PROCESSED"></xs:enumeration>
+<xs:enumeration value="INCORRECT_PKGS_FOR_SESSION_TYPE"></xs:enumeration>
+<xs:enumeration value="INCORRECT_PICKUP_ADDRESS_FID"></xs:enumeration>
+<xs:enumeration value="INCORRECT_PICKUP_ADDRESS_NAME"></xs:enumeration>
+<xs:enumeration value="INCORRECT_PICKUP_ADDRESS_COMPANY"></xs:enumeration>
+<xs:enumeration value="INCORRECT_PICKUP_ADDRESS_ADDRESS"></xs:enumeration>
+<xs:enumeration value="INCORRECT_PICKUP_ADDRESS_CITY"></xs:enumeration>
+<xs:enumeration value="INCORRECT_PICKUP_ADDRESS_COUNTRY"></xs:enumeration>
+<xs:enumeration value="INCORRECT_PICKUP_ADDRESS_POSTAL_CODE"></xs:enumeration>
+<xs:enumeration value="INCORRECT_PICKUP_ADDRESS_EMAIL"></xs:enumeration>
+<xs:enumeration value="INCORRECT_PICKUP_ADDRESS_PHONE"></xs:enumeration>
+<xs:enumeration value="PARCEL_LIMIT_EXCEEDED"></xs:enumeration>
+<xs:enumeration value="ACCESS_DENIED_FOR_FID"></xs:enumeration>
+<xs:enumeration value="UNKNOWN_ERROR"></xs:enumeration>
+<xs:enumeration value="ALREADY_ADVICED"></xs:enumeration>
+<xs:enumeration value="ADVICE_ERROR"></xs:enumeration>
+<xs:enumeration value="DB_ERROR"></xs:enumeration>
+</xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="policyDSPEnumV2">
+<xs:restriction base="xs:string">
+<xs:enumeration value="STOP_ON_FIRST_ERROR"></xs:enumeration>
+<xs:enumeration value="IGNORE_ERRORS"></xs:enumeration>
+</xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="outputLabelTypeEnumV1">
+<xs:restriction base="xs:string">
+<xs:enumeration value="BIC3"></xs:enumeration>
+<xs:enumeration value="EXTENDED"></xs:enumeration>
+</xs:restriction>
+</xs:simpleType>
+</xs:schema>

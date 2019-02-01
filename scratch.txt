@@ -1,0 +1,14 @@
+soapex
+******
+mix soapex.gen %path%
+-> generates module with submodule per service
+
+defmodule SoapClient do
+    defmodule FirstService do
+        
+    end
+
+    defmodule SecondService do
+
+    end
+end

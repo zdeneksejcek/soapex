@@ -1,0 +1,355 @@
+<?xml version="1.0"?>
+<xsd:schema elementFormDefault="qualified" xmlns:tns="http://www.zasilkovna.cz/api/soap.wsdl" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.zasilkovna.cz/api/soap.wsdl">
+    <xsd:simpleType name="string2">
+        <xsd:restriction base="xsd:string">
+            <xsd:length value="2" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="string16">
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="16" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="string24">
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="24" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="string32">
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="32" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="string64">
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="64" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="email">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="|.*@.*\..*" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="phone">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="\s*(\+?42[01])?\s*[0-9]{3}\s*[0-9]{3}\s*[0-9]{3}\s*" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="money">
+        <xsd:restriction base="xsd:decimal">
+            <xsd:fractionDigits value="2" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="weight">
+        <xsd:restriction base="xsd:decimal">
+            <xsd:fractionDigits value="3" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="zip">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="\s*[0-9]{3} ?[0-9]{2}\s*" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="currency">
+        <xsd:restriction base="xsd:string">
+            <xsd:length value="3" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <!--added from dpd-->
+    <xsd:simpleType name="serviceCurrencyEnum">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="PLN"></xsd:enumeration>
+            <xsd:enumeration value="EUR"></xsd:enumeration>
+            <xsd:enumeration value="USD"></xsd:enumeration>
+            <xsd:enumeration value="CHF"></xsd:enumeration>
+            <xsd:enumeration value="SEK"></xsd:enumeration>
+            <xsd:enumeration value="NOK"></xsd:enumeration>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <!--/added-->
+
+    <xsd:complexType name="StatusRecord">
+        <xsd:sequence>
+            <xsd:element name="dateTime" type="xsd:dateTime" />
+            <xsd:element name="statusCode" type="xsd:unsignedInt" />
+            <xsd:element name="codeText" type="xsd:string" />
+            <xsd:element name="statusText" type="xsd:string" />
+            <xsd:element name="branchId" type="xsd:unsignedInt" />
+            <xsd:element name="destinationBranchId" type="xsd:unsignedInt" />
+            <xsd:element name="externalTrackingCode" type="xsd:string" nillable="true" />
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="CurrentStatusRecord">
+        <xsd:complexContent>
+            <xsd:extension base="tns:StatusRecord">
+                <xsd:sequence>
+                    <xsd:element name="isReturning" type="xsd:boolean" />
+                    <xsd:element name="storedUntil" type="xsd:date" nillable="true" />
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="DispatchOrder">
+        <xsd:sequence>
+            <xsd:element name="goods" type="xsd:string" />
+            <xsd:element name="pdf" type="xsd:base64Binary" />
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="DispatchOrder2">
+        <xsd:sequence>
+            <xsd:element name="goods" type="xsd:string" />
+            <xsd:element name="pdf" type="xsd:base64Binary" />
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="DispatchOrder2Item">
+        <xsd:sequence>
+            <xsd:element name="code" type="xsd:string" />
+            <xsd:element name="name" type="xsd:base64Binary" />
+            <xsd:element name="unit_price" type="xsd:base64Binary" />
+            <xsd:element name="pieces" type="xsd:base64Binary" />
+            <xsd:element name="price" type="xsd:base64Binary" />
+            <xsd:element name="vat" type="xsd:base64Binary" />
+            <xsd:element name="price_vat" type="xsd:base64Binary" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="PacketAttributes">
+        <xsd:all>
+            <xsd:element name="id" type="xsd:unsignedLong" nillable="true" />
+            <xsd:element name="number" type="tns:string24" />
+            <xsd:element name="name" type="tns:string32" />
+            <xsd:element name="surname" type="tns:string32" />
+            <xsd:element name="company" type="tns:string32" nillable="true" />
+            <xsd:element name="email" type="tns:email" nillable="true" />
+            <xsd:element name="phone" type="tns:phone" nillable="true" />
+            <xsd:element name="addressId" type="xsd:unsignedInt" />
+            <xsd:element name="cod" type="tns:money" default="0" nillable="true" />
+            <xsd:element name="currency" type="tns:currency" nillable="true" />
+            <xsd:element name="value" type="tns:money" />
+            <xsd:element name="weight" type="tns:weight" nillable="true" />
+            <xsd:element name="eshop" type="tns:string64" nillable="true" />
+            <xsd:element name="adultContent" type="xsd:unsignedInt" default="0" nillable="true" />
+            <xsd:element name="deliverOn" type="xsd:date" nillable="true" />
+            <xsd:element name="note" type="xsd:string" nillable="true" />
+            <xsd:element name="street" type="tns:string64" nillable="true" />
+            <xsd:element name="houseNumber" type="tns:string16" nillable="true" />
+            <xsd:element name="city" type="tns:string32" nillable="true" />
+            <xsd:element name="province" type="tns:string32" nillable="true" />
+            <xsd:element name="zip" type="tns:zip" nillable="true" />
+            <xsd:element name="dispatchOrder" type="tns:DispatchOrder" nillable="true" />
+            <xsd:element name="customerBarcode" type="tns:string32" nillable="true" />
+            <xsd:element name="carrierPickupPoint" type="tns:string32" nillable="true" />
+            <xsd:element name="carrierService" type="xsd:string" nillable="true" />
+            <xsd:element name="customsDeclaration" type="tns:CustomsDeclaration" nillable="true" />
+            <xsd:element name="size" type="tns:Size" nillable="true" />
+        </xsd:all>
+    </xsd:complexType>
+    <xsd:complexType name="PacketsAttributes">
+        <xsd:sequence>
+            <xsd:element name="attributes" minOccurs="1" maxOccurs="unbounded" type="tns:PacketAttributes" />
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="UpdatePacketAttributes">
+        <xsd:all>
+            <xsd:element name="cod" type="tns:money" minOccurs="0" />
+        </xsd:all>
+    </xsd:complexType>
+    <xsd:complexType name="ClaimAttributes">
+        <xsd:all>
+            <xsd:element name="id" type="xsd:unsignedLong" nillable="true" />
+            <xsd:element name="number" type="tns:string24" />
+            <xsd:element name="email" type="tns:email" nillable="true" />
+            <xsd:element name="phone" type="tns:phone" nillable="true" />
+            <xsd:element name="value" type="tns:money" />
+            <xsd:element name="currency" type="tns:currency" />
+            <xsd:element name="eshop" type="tns:string64" nillable="true" />
+            <xsd:element name="sendLabelToEmail" type="xsd:boolean" nillable="true" />
+        </xsd:all>
+    </xsd:complexType>
+    <xsd:complexType name="CustomsDeclarationItems">
+        <xsd:sequence>
+            <xsd:element name="item" minOccurs="1" maxOccurs="unbounded" type="tns:CustomsDeclarationItem" />
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="CustomsDeclaration">
+        <xsd:all>
+            <xsd:element name="deliveryCostEur" type="tns:money"/>
+            <xsd:element name="deliveryCost" type="tns:money"/>
+            <xsd:element name="items" type="tns:CustomsDeclarationItems" />
+        </xsd:all>
+    </xsd:complexType>
+    <xsd:complexType name="CustomsDeclarationItem">
+        <xsd:all>
+            <xsd:element name="customsCode" type="xsd:unsignedLong"/>
+            <xsd:element name="valueEur" type="tns:money"/>
+            <xsd:element name="value" type="tns:money"/>
+            <xsd:element name="productEan" type="tns:string24"/>
+            <xsd:element name="productNameEn" type="tns:string32"/>
+            <xsd:element name="productName" type="tns:string32"/>
+            <xsd:element name="unitsCount" type="xsd:unsignedInt" default="0"/>
+            <xsd:element name="countryOfOrigin" type="tns:string16"/>
+            <xsd:element name="currency" type="tns:string16" minOccurs="0"/>
+            <xsd:element name="invoiceNumber" type="tns:string16" minOccurs="0"/>
+            <xsd:element name="invoiceIssueDate" type="xsd:date" minOccurs="0"/>
+            <xsd:element name="weight" type="xsd:unsignedInt" minOccurs="0"/>
+            <xsd:element name="isFoodBook" type="xsd:boolean" minOccurs="0"/>
+            <xsd:element name="isVoc" type="xsd:boolean" minOccurs="0"/>
+        </xsd:all>
+    </xsd:complexType>
+    <xsd:complexType name="Size">
+        <xsd:sequence>
+            <xsd:element name="length" type="xsd:unsignedInt"/>
+            <xsd:element name="width" type="xsd:unsignedInt"/>
+            <xsd:element name="height" type="xsd:unsignedInt"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="PacketIdDetail">
+        <xsd:sequence>
+            <xsd:element name="id" type="xsd:unsignedLong" />
+            <xsd:element name="barcode" type="xsd:string" />
+            <xsd:element name="barcodeText" type="xsd:string" />
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="CreatePacketResult">
+        <xsd:sequence>
+            <xsd:element name="createdPacket" type="tns:PacketIdDetail" nillable="true" />
+            <xsd:element name="fault" type="xsd:string" nillable="true" />
+            <xsd:element name="packetAttributesFault" type="tns:PacketAttributesFault" minOccurs="0" />
+            <xsd:element name="dispatchOrderUnknownCodeFault" type="tns:DispatchOrderUnknownCodeFault" minOccurs="0" />
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="CreatePacketsResults">
+        <xsd:sequence>
+            <xsd:element name="packet" minOccurs="0" maxOccurs="unbounded" type="tns:CreatePacketResult" />
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="SenderGetReturnRoutingResult">
+        <xsd:sequence>
+            <xsd:element name="routingSegment" minOccurs="1" maxOccurs="unbounded" type="xsd:string" />
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="PacketIds">
+        <xsd:sequence>
+            <xsd:element name="id" minOccurs="1" maxOccurs="unbounded" type="xsd:unsignedLong" />
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="ShipmentIdDetail">
+        <xsd:all>
+            <xsd:element name="id" type="xsd:unsignedInt" />
+            <xsd:element name="checksum" type="xsd:string" />
+            <xsd:element name="barcode" type="xsd:string" />
+            <xsd:element name="barcodeText" type="xsd:string" />
+        </xsd:all>
+    </xsd:complexType>
+    <xsd:complexType name="StatusRecords">
+        <xsd:sequence>
+            <xsd:element name="record" minOccurs="1" maxOccurs="unbounded" type="tns:StatusRecord" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="AttributeFault">
+        <xsd:all>
+            <xsd:element name="name" type="xsd:string" />
+            <xsd:element name="fault" type="xsd:string" />
+        </xsd:all>
+    </xsd:complexType>
+
+    <xsd:complexType name="PacketAttributesFault">
+        <xsd:all>
+            <xsd:element name="attributes">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="fault" type="tns:AttributeFault" minOccurs="1" maxOccurs="unbounded" />
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:all>
+    </xsd:complexType>
+    <xsd:element type="tns:PacketAttributesFault" name="PacketAttributesFault" />
+
+    <xsd:complexType name="PacketIdFault" />
+    <xsd:complexType name="PacketIdsFault">
+        <xsd:all>
+            <xsd:element name="ids">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="packetId" type="xsd:unsignedLong" minOccurs="1" maxOccurs="unbounded" />
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:all>
+    </xsd:complexType>
+    <xsd:element name="PacketIdFault" type="tns:PacketIdFault" />
+    <xsd:element name="PacketIdsFault" type="tns:PacketIdsFault" />
+
+    <xsd:complexType name="CancelNotAllowedFault" />
+    <xsd:element name="CancelNotAllowedFault" type="tns:CancelNotAllowedFault" />
+
+    <xsd:complexType name="NoPacketIdsFault" />
+    <xsd:element name="NoPacketIdsFault" type="tns:NoPacketIdsFault" />
+
+    <xsd:complexType name="CustomBarcodeNotAllowedFault" />
+    <xsd:element name="CustomBarcodeNotAllowedFault" type="tns:CustomBarcodeNotAllowedFault" />
+
+    <xsd:complexType name="DateOutOfRangeFault" />
+    <xsd:element name="DateOutOfRangeFault" type="tns:DateOutOfRangeFault" />
+
+    <xsd:complexType name="UnknownLabelFormatFault" />
+    <xsd:element name="UnknownLabelFormatFault" type="tns:UnknownLabelFormatFault" />
+
+    <xsd:complexType name="IncorrectApiPasswordFault" />
+    <xsd:element name="IncorrectApiPasswordFault" type="tns:IncorrectApiPasswordFault" />
+
+    <xsd:complexType name="SenderNotExists" />
+    <xsd:element name="SenderNotExists" type="tns:SenderNotExists" />
+
+    <xsd:complexType name="ArgumentsFault" />
+    <xsd:element name="ArgumentsFault" type="tns:ArgumentsFault" />
+
+    <xsd:complexType name="InvalidEmailAddressFault" />
+    <xsd:element name="InvalidEmailAddressFault" type="tns:InvalidEmailAddressFault" />
+
+    <xsd:complexType name="InvalidPhoneNumberFault" />
+    <xsd:element name="InvalidPhoneNumberFault" type="tns:InvalidPhoneNumberFault" />
+
+    <xsd:complexType name="DispatchOrderNotAllowedFault" />
+    <xsd:element name="DispatchOrderNotAllowedFault" type="tns:DispatchOrderNotAllowedFault" />
+
+    <xsd:complexType name="DispatchOrderInvalidPdfFault" />
+    <xsd:element name="DispatchOrderInvalidPdfFault" type="tns:DispatchOrderInvalidPdfFault" />
+
+    <xsd:complexType name="TooLateToUpdateCodFault" />
+    <xsd:element name="TooLateToUpdateCodFault" type="tns:TooLateToUpdateCodFault" />
+
+    <xsd:complexType name="CodUpdateNotAllowedFault" />
+    <xsd:element name="CodUpdateNotAllowedFault" type="tns:CodUpdateNotAllowedFault" />
+
+    <xsd:complexType name="DispatchOrderUnknownCodeFault">
+        <xsd:all>
+            <xsd:element name="codes">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="code" type="xsd:string" minOccurs="1" maxOccurs="unbounded" />
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:all>
+    </xsd:complexType>
+    <xsd:element name="DispatchOrderUnknownCodeFault" type="tns:DispatchOrderUnknownCodeFault" />
+
+    <xsd:complexType name="NotSupportedFault" />
+    <xsd:element name="NotSupportedFault" type="tns:NotSupportedFault" />
+
+    <xsd:complexType name="ExternalGatewayFault" />
+    <xsd:element name="ExternalGatewayFault" type="tns:ExternalGatewayFault" />
+
+    <xsd:complexType name="InvalidCourierNumber" />
+    <xsd:element name="InvalidCourierNumber" type="tns:InvalidCourierNumber" />
+
+    <xsd:complexType name="NullableDate">
+        <xsd:sequence>
+            <xsd:element name="date" type="xsd:date" nillable="true" />
+        </xsd:sequence>
+    </xsd:complexType>
+</xsd:schema>
