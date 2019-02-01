@@ -10,11 +10,11 @@ use Mix.Config
 
 # You can configure your application as:
 #
-#     config :soupex, key: :value
+#     config :soapex, key: :value
 #
 # and access this configuration in your application as:
 #
-#     Application.get_env(:soupex, :key)
+#     Application.get_env(:soapex, :key)
 #
 # You can also configure a third-party app:
 #
