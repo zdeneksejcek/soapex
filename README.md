@@ -3,7 +3,14 @@
 [![Travis build](https://api.travis-ci.org/zdeneksejcek/soapex.svg?branch=master
 "Build Status")](https://api.travis-ci.org/zdeneksejcek/soapex.svg?branch=master)
 
-**TODO: Add description**
+## Introduction
+This library offers implementation of SOAP1.1 and SOAP1.2 client. It downloads WSDL ang generates proxy module.
+
+## Progress
+- [x] WSDL parser
+- [x] XSD parser
+- [ ] proxy generator
+- [ ] tests
 
 ## Installation
 
