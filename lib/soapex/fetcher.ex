@@ -6,19 +6,25 @@ defmodule Soapex.Fetcher do
 
   @spec get_files(String.t()) :: Map.t()
   def get_files(path) do
-    wsdl = get_content(path)
-    parsed_imports = nil #get_imports(wsdl)
+    wsdl_root = get_root(path)
 
-    {:ok, %{wsdl: wsdl, imports: parsed_imports}}
+    namespaces = wsdl_root |> xpath(~x"//namespace::*"l)
+
+    nss = %{
+      wsdl:    get_schema_prefix(namespaces, "http://schemas.xmlsoap.org/wsdl/"),
+      schema:  get_schema_prefix(namespaces, "http://www.w3.org/2001/XMLSchema"),
+      soap10:  get_schema_prefix(namespaces, "http://schemas.xmlsoap.org/wsdl/soap/"),
+      soap12:  get_schema_prefix(namespaces, "http://schemas.xmlsoap.org/wsdl/soap12/")
+    }
+
+    parsed_imports = get_imports(wsdl_root, nss)
+
+    {:ok, %{wsdl: wsdl_root, imports: parsed_imports, nss: nss}}
   end
 
-  defp get_imports(wsdl_content) do
-    wsdl_ns =             get_schema_prefix(wsdl_content, "http://schemas.xmlsoap.org/wsdl/")
-    schema_ns =           get_schema_prefix(wsdl_content, "http://www.w3.org/2001/XMLSchema")
-    {version, soap_ns} =  get_soap_version(wsdl_content)
-
-    wsdl_content
-    |> xpath(~x"//#{ns("definitions",wsdl_ns)}/#{ns("types",wsdl_ns)}/#{ns("schema",schema_ns)}/#{ns("import",schema_ns)}"l)
+  defp get_imports(wsdl_root, nss) do
+    wsdl_root
+    |> xpath(~x"//#{ns("definitions",nss.wsdl)}/#{ns("types",nss.wsdl)}/#{ns("schema",nss.schema)}/#{ns("import",nss.schema)}"l)
     |> Enum.map(fn el -> xpath(el, ~x".", namespace: ~x"./@namespace"s, schema_location: ~x"./@schemaLocation"s) end)
     |> Enum.map(&fetch_import/1)
   end
@@ -27,7 +33,7 @@ defmodule Soapex.Fetcher do
     %{schema_location: path} = import
 
     Map.merge(import, %{
-      content: get_content(path)
+      content: get_root(path)
     });
   end
 
@@ -39,14 +45,14 @@ defmodule Soapex.Fetcher do
     end
   end
 
-  defp get_content(path) do
+  defp get_root(path) do
     case valid_url?(path) do
       {:ok, url} ->
         %HTTPoison.Response{body: wsdl} = HTTPoison.get!(url, [], follow_redirect: true, max_redirect: 3)
-        wsdl
+        wsdl |> xpath(~x".")
       {:error, _} ->
         {:ok, wsdl} = File.read(path)
-        wsdl
+        wsdl |> xpath(~x".")
     end
   end
 

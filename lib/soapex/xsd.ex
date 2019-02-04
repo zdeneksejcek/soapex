@@ -1,25 +1,29 @@
-defmodule Soapex.Wsd do
+defmodule Soapex.Xsd do
   @moduledoc false
 
   import SweetXml
   import Soapex.Util
 
-  @spec get_types(String.t()) :: map
-  def get_types(schema) do
-    schema_ns = get_schema_prefix(schema, "http://www.w3.org/2001/XMLSchema")
+  @spec get_types(String.t(), map) :: map
+  def get_types(schema, nss) do
+    schema_el = schema |> xpath(~x"//#{ns("schema", nss.schema)}")
 
+    get_schema(schema_el, nss.schema)
+  end
+
+  def get_schema(schema_el, schema_ns) do
     %{
       xsd_prefix:     List.to_string(schema_ns),
-      elements:       get_elements(schema, schema_ns),
-      complex_types:  get_complex_types(schema, schema_ns),
-      simple_types:   get_simple_types(schema, schema_ns)
+      elements:       get_elements(schema_el, schema_ns),
+      complex_types:  get_complex_types(schema_el, schema_ns),
+      simple_types:   get_simple_types(schema_el, schema_ns)
     }
   end
 
   @spec get_simple_types(String.t(), String.t()) :: list(Map.t())
-  defp get_simple_types(schema, schema_ns) do
-    schema
-    |> xpath(~x"//#{ns("schema", schema_ns)}/#{ns("simpleType", schema_ns)}"l)
+  defp get_simple_types(schema_el, schema_ns) do
+    schema_el
+    |> xpath(~x"./#{ns("simpleType", schema_ns)}"l)
     |> Enum.map(fn node -> get_simple_type(node, schema_ns) end)
     |> Enum.map(&no_nil_or_empty_value/1)
   end
@@ -41,9 +45,9 @@ defmodule Soapex.Wsd do
   end
 
   @spec get_complex_types(String.t(), String.t()) :: list(Map.t())
-  defp get_complex_types(schema, schema_ns) do
-    schema
-    |> xpath(~x"//#{ns("schema", schema_ns)}/#{ns("complexType", schema_ns)}"l)
+  defp get_complex_types(schema_el, schema_ns) do
+    schema_el
+    |> xpath(~x"./#{ns("complexType", schema_ns)}"l)
     |> Enum.map(fn node -> get_complex_type(node, schema_ns) end)
   end
 
@@ -80,9 +84,9 @@ defmodule Soapex.Wsd do
   end
 
   @spec get_elements(String.t(), String.t()) :: list(Map.t())
-  defp get_elements(schema, schema_ns) do
-    schema
-    |> xpath(~x"//#{ns("schema", schema_ns)}/#{ns("element", schema_ns)}"l)
+  defp get_elements(schema_el, schema_ns) do
+    schema_el
+    |> xpath(~x"./#{ns("element", schema_ns)}"l)
     |> Enum.map(fn node -> get_element(node, schema_ns) end)
   end
 

@@ -15,4 +15,7 @@ defmodule Soupex do
   def init_wsdl(path) do
     :world
   end
+
+  # service + port -> one binding + on port type
+
 end

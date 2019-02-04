@@ -4,10 +4,10 @@ defmodule Soapex.Wsdl do
   import SweetXml
   import Soapex.Util
   alias Soapex.Fetcher
+  alias Soapex.Xsd
 
-  @spec get_wsdl(string()) :: map()
+  @spec get_wsdl(String.t()) :: map()
   def get_wsdl(path) do
-    # get content of all related files (wsdl + schemas)
     case Fetcher.get_files(path) do
       {:ok, files} ->
         parse_files(files)
@@ -18,20 +18,33 @@ defmodule Soapex.Wsdl do
 
   @spec parse_files(map()) :: map()
   def parse_files(files) do
-    nss = %{
-      wsdl:    get_schema_prefix(files.wsdl, "http://schemas.xmlsoap.org/wsdl/"),
-      schema:  get_schema_prefix(files.wsdl, "http://www.w3.org/2001/XMLSchema"),
-      http:    get_schema_prefix(files.wsdl, "http://schemas.xmlsoap.org/wsdl/http/"),
-      soap10:  get_schema_prefix(files.wsdl, "http://schemas.xmlsoap.org/wsdl/soap/"),
-      soap12:  get_schema_prefix(files.wsdl, "http://schemas.xmlsoap.org/wsdl/soap12/")
-    }
 
     %{
-      services:   get_services(files.wsdl, nss),
-      bindings:   get_bindings(files.wsdl, nss),
-      port_types: get_port_types(files.wsdl, nss),
-      messages:   get_messages(files.wsdl, nss)
+      services:   get_services(files.wsdl, files.nss),
+      bindings:   get_bindings(files.wsdl, files.nss),
+      port_types: get_port_types(files.wsdl, files.nss),
+      messages:   get_messages(files.wsdl, files.nss),
+      types:      get_types(files.wsdl, files.imports, files.nss)
     }
+  end
+
+  defp get_types(wsdl, imports, nss) do
+    local_type = wsdl
+                 |> xpath(~x"//#{ns("definitions", nss.wsdl)}/#{ns("types", nss.wsdl)}/#{ns("schema", nss.schema)}")
+                 |> Xsd.get_types(nss)
+
+    imported_types = imports
+                     |> Enum.map(fn im -> Xsd.get_types(im.content, nss) end) #
+
+    %{
+      simple_types:   join_lists(local_type, imported_types, :simple_types),
+      complex_types:  join_lists(local_type, imported_types, :complex_types),
+      elements:       join_lists(local_type, imported_types, :elements),
+    }
+  end
+
+  defp join_lists(local_type, imported_types, name) do
+    local_type[name] ++ Enum.reduce(imported_types, [], fn v, acc -> v[name] ++ acc end)
   end
 
   defp get_messages(wsdl, nss) do
@@ -51,7 +64,51 @@ defmodule Soapex.Wsdl do
 
   defp get_bindings(wsdl, nss) do
     wsdl
-    |> xpath(~x"//#{ns("binding", nss.wsdl)}"l, name: ~x"./@name"s, type: ~x"./@type"s)
+    |> xpath(~x"//#{ns("binding", nss.wsdl)}"l)
+    |> Enum.map(fn p -> get_binding(p, nss) end)
+    |> Enum.reject(fn x -> x[:soap] == nil end)
+  end
+
+  defp get_binding(bin_el, nss) do
+    binding =           bin_el |> xpath(~x".", name: ~x"./@name"s, type: ~x"./@type"s)
+    soap =              bin_el |> xpath(~x"./#{ns("binding", nss.soap10)} | ./#{ns("binding", nss.soap12)}"o, style: ~x"./@style"s, transport: ~x"./@transport"s)
+
+    operations = bin_el
+                 |> xpath(~x"./#{ns("operation", nss.wsdl)}"l)
+                 |> Enum.map(fn p -> get_binding_operation(p, nss) end)
+
+    Map.merge(binding, %{
+      operations: operations,
+      soap:       soap
+    })
+  end
+
+  defp get_binding_operation(op_el, nss) do
+    operation =         op_el |> xpath(~x".", name: ~x"./@name"s)
+    soap =              op_el |> xpath(~x"./#{ns("operation", nss.soap10)} | ./#{ns("operation", nss.soap12)}"o, style: ~x"./@style"s, soap_action: ~x"./@soapAction"s)
+
+    input =             get_operation_body(op_el, nss, "input")
+    output =            get_operation_body(op_el, nss, "output")
+
+    Map.merge(operation, %{
+      soap:   soap,
+      input:  input,
+      output: output,
+      faults: get_binding_faults(op_el, nss)
+    })
+  end
+
+  defp get_operation_body(op_el, nss, type) do
+    op_el
+    |> xpath(~x"./#{ns(type, nss.wsdl)}/#{ns("body", nss.soap10)} | ./#{ns(type, nss.wsdl)}/#{ns("body", nss.soap12)}"o, namespace: ~x"./@namespace"s, use: ~x"./@use"s)
+  end
+
+  defp get_binding_faults(op_el, nss) do
+    op_el
+    |> xpath(~x"./#{ns("fault", nss.wsdl)}"l)
+    |> Enum.map(fn f_el ->
+        xpath(f_el, ~x".", name: ~x"./@name", use: ~x"./#{ns("fault", nss.soap10)}/@use | ./#{ns("fault", nss.soap12)}/@use"s)
+    end)
   end
 
   defp get_port_types(wsdl, nss) do
@@ -104,17 +161,19 @@ defmodule Soapex.Wsdl do
     |> Enum.map(
          fn p ->
             binding = remove_ns(xpath(p, ~x"./@binding"s))
+            name = xpath(p, ~x"./@name"s)
 
-            trans = [nss.http, nss.soap10, nss.soap12]
+            trans = [nss.soap10, nss.soap12]
                     |> Enum.map(fn ns -> xpath(p, ~x"./#{ns("address", ns)}/@location"s) |> to_nil end)
 
             port = case trans do
-                      [http, nil, nil]    -> %{protocol: :http, location: http}
-                      [nil, soap10, nil]  -> %{protocol: :soap10, location: soap10}
-                      [nil, nil, soap12] -> %{protocol: :soap12, location: soap12}
+                      [nil, nil] -> %{protocol: :unknown}
+                      [soap10, nil]  -> %{protocol: :soap10, location: soap10}
+                      [nil, soap12] -> %{protocol: :soap12, location: soap12}
                    end
 
-            Map.merge(port, %{binding: binding})
+            Map.merge(port, %{binding: binding, name: name})
          end)
+      |> Enum.reject(fn p -> p.protocol == :unknown end)
   end
 end
