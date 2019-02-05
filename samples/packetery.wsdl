@@ -1,4 +1,5 @@
 <?xml version="1.0"?>
+<!--packetery-->
 <definitions name="packetery"
           targetNamespace="http://www.zasilkovna.cz/api/soap.wsdl"
           xmlns:tns="http://www.zasilkovna.cz/api/soap.wsdl"

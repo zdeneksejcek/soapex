@@ -107,7 +107,7 @@ defmodule Soapex.Wsdl do
     op_el
     |> xpath(~x"./#{ns("fault", nss.wsdl)}"l)
     |> Enum.map(fn f_el ->
-        xpath(f_el, ~x".", name: ~x"./@name", use: ~x"./#{ns("fault", nss.soap10)}/@use | ./#{ns("fault", nss.soap12)}/@use"s)
+        xpath(f_el, ~x".", name: ~x"./@name"s, use: ~x"./#{ns("fault", nss.soap10)}/@use | ./#{ns("fault", nss.soap12)}/@use"s)
     end)
   end
 
