@@ -4,6 +4,14 @@ defmodule Soapex.Xsd do
   import SweetXml
   import Soapex.Util
 
+  def get_types(schema) do
+    nss = get_namespaces(schema)
+
+    schema_el = schema |> xpath(~x"//#{ns("schema", nss.schema)}")
+
+    get_schema(schema_el, nss.schema)
+  end
+
   @spec get_types(String.t(), map) :: map
   def get_types(schema, nss) do
     schema_el = schema |> xpath(~x"//#{ns("schema", nss.schema)}")
@@ -13,7 +21,7 @@ defmodule Soapex.Xsd do
 
   def get_schema(schema_el, schema_ns) do
     %{
-      xsd_prefix:     List.to_string(schema_ns),
+      xsd_prefix:     schema_ns,
       elements:       get_elements(schema_el, schema_ns),
       complex_types:  get_complex_types(schema_el, schema_ns),
       simple_types:   get_simple_types(schema_el, schema_ns)
@@ -30,18 +38,44 @@ defmodule Soapex.Xsd do
 
   defp get_simple_type(node, schema_ns) do
     name = node |> xpath(~x".", name: ~x"./@name"s)
-    restriction = node |> xpath(~x"./#{ns("restriction", schema_ns)}", base: ~x"./@base"s)
-
-    enumerations = node
-                   |> xpath(~x"./#{ns("restriction", schema_ns)}/#{ns("enumeration", schema_ns)}"l)
-                   |> ensure_list
-                   |> Enum.map(fn node -> xpath(node, ~x"./@value"s) end)
+    restriction = node |> get_restriction(schema_ns)
 
     name
-    |> Map.merge(%{
-        restriction: restriction,
-        enumerations: enumerations
-    })
+    |> Map.merge(%{restriction: restriction})
+    |> no_nil_or_empty_value
+  end
+
+  defp get_restriction(node, schema_ns) do
+    restriction = node |> xpath(~x"./#{ns("restriction", schema_ns)}"o,
+          base:           ~x"./@base"s,
+          length:         ~x"./#{ns("length", schema_ns)}/@value"s,
+          min_length:     ~x"./#{ns("minLength", schema_ns)}/@value"s,
+          max_length:     ~x"./#{ns("maxLength", schema_ns)}/@value"s,
+          min_exclusive:  ~x"./#{ns("minExclusive", schema_ns)}/@value"s,
+          max_exclusive:  ~x"./#{ns("maxExclusive", schema_ns)}/@value"s,
+          min_inclusive:  ~x"./#{ns("minInclusive", schema_ns)}/@value"s,
+          max_inclusive:  ~x"./#{ns("maxInclusive", schema_ns)}/@value"s,
+          total_digits:   ~x"./#{ns("totalDigits", schema_ns)}/@value"s,
+          fraction_digits: ~x"./#{ns("fractionDigits", schema_ns)}/@value"s,
+          enumeration:    ~x"./#{ns("enumeration", schema_ns)}"l,
+          white_space:    ~x"./#{ns("whiteSpace", schema_ns)}/@value"s,
+          pattern:        ~x"./#{ns("pattern", schema_ns)}/@value"s)
+      |> no_nil_or_empty_value
+
+    case restriction do
+      nil ->  nil
+      _ ->    restriction
+              |> Map.put(:enumeration, get_enumeration(restriction[:enumeration]))
+              |> Map.put(:base, type(restriction[:base], schema_ns))
+              |> no_nil_or_empty_value
+    end
+  end
+
+  defp get_enumeration(nil), do: nil
+  defp get_enumeration(enums) do
+    enums
+    |> ensure_list
+    |> Enum.map(fn node -> xpath(node, ~x"./@value"s) end)
   end
 
   @spec get_complex_types(String.t(), String.t()) :: list(Map.t())
@@ -91,12 +125,69 @@ defmodule Soapex.Xsd do
   end
 
   defp get_element(node, schema_ns) do
-    header =        node |> xpath(~x".", name: ~x"./@name"s, type: ~x"./@type"s)
+    header =        node |> xpath(~x".", name: ~x"./@name"s, type: ~x"./@type"s, nillable: ~x"./@nillable"os, min_occurs: ~x"./@minOccurs"oi, max_occurs: ~x"./@maxOccurs"os)
     complex_type =  node |> xpath(~x"./#{ns("complexType", schema_ns)}") |> get_complex_type(schema_ns)
 
-    Map.merge(header, %{
-      complex_type: complex_type
-    }) |> no_nil_or_empty_value
+    header
+    |> Map.put(:nillable, boolean(header[:nillable]))
+    |> Map.put(:type, type(header[:type], schema_ns))
+    |> Map.merge(%{complex_type: complex_type})
+    |> no_nil_or_empty_value
   end
 
+  defp boolean(""), do: nil
+  defp boolean(nil), do: nil
+  defp boolean("false"), do: false
+  defp boolean("true"), do: true
+
+  # https://www.w3.org/2001/XMLSchema-datatypes
+  defp type(value, schema_ns) do
+    case String.split(value, ":") do
+      [^schema_ns, b_type] ->
+        case b_type do
+          "string" -> :string
+          "boolean" -> :boolean
+          "float" -> :float
+          "double" -> :double
+          "decimal" -> :decimal
+          "dateTime" -> :date_time
+          "duration" -> :duration
+          "hexBinary" -> :hex_binary
+          "base64Binary" -> :base64_binary
+          "anyURI" -> :any_uri
+          "ID" -> :id
+          "IDREF" -> :id_ref
+          "ENTITY" -> :entity
+          "NOTATION" -> :notation
+          "normalizedString" -> :normalized_string
+          "token" -> :token
+          "language" -> :language
+          "nonNegativeInteger" -> :non_negative_integer
+          "positiveInteger" -> :positive_integer
+          "nonPositiveInteger" -> :non_positive_integer
+          "negativeInteger" -> :negative_integer
+          "byte" -> :byte
+          "int" -> :int
+          "long" -> :long
+          "short" -> :short
+          "unsignedByte" -> :unsigned_byte
+          "unsignedInt" -> :unsigned_int
+          "unsignedLong" -> :unsigned_long
+          "unsignedShort" -> :unsigned_short
+          "date" -> :date
+          "time" -> :time
+          "gYearMonth" -> :g_year_month
+          "gYear" -> :g_year
+          "gMonthDay" -> :g_month_day
+          "gDay" -> :g_day
+          "gMonth" -> :g_month
+          dt ->
+            throw "Unsupported schema data type: #{dt}"
+        end
+      [ns, custom_type] ->
+        {ns, custom_type}
+      [custom_type] ->
+        custom_type
+    end
+  end
 end

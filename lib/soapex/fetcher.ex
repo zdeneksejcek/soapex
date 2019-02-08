@@ -7,15 +7,7 @@ defmodule Soapex.Fetcher do
   @spec get_files(String.t()) :: Map.t()
   def get_files(path) do
     wsdl_root = get_root(path)
-
-    namespaces = wsdl_root |> xpath(~x"//namespace::*"l)
-
-    nss = %{
-      wsdl:    get_schema_prefix(namespaces, "http://schemas.xmlsoap.org/wsdl/"),
-      schema:  get_schema_prefix(namespaces, "http://www.w3.org/2001/XMLSchema"),
-      soap10:  get_schema_prefix(namespaces, "http://schemas.xmlsoap.org/wsdl/soap/"),
-      soap12:  get_schema_prefix(namespaces, "http://schemas.xmlsoap.org/wsdl/soap12/")
-    }
+    nss = get_namespaces(wsdl_root)
 
     parsed_imports = get_imports(wsdl_root, nss)
 

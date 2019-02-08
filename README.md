@@ -9,7 +9,8 @@ This library offers implementation of SOAP1.1 and SOAP1.2 client. It downloads W
 ## Progress
 - [x] WSDL parser
 - [x] XSD parser
-- [ ] proxy generator
+- [x] proxy generator
+- [ ] data validation
 - [ ] tests
 
 ## Installation

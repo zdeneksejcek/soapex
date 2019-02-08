@@ -10,13 +10,11 @@ defmodule Soapex.Info do
   end
 
   defp get_port(port, wsdl) do
-    %{
-      name:     port.name,
+    %{name:     port.name,
       protocol: port.protocol,
       location: port.location,
 
-      operations: get_operations(port.binding, wsdl)
-    }
+      operations: get_operations(port.binding, wsdl)}
   end
 
   defp get_operations(bin_name, wsdl) do
@@ -35,6 +33,10 @@ defmodule Soapex.Info do
 
     oper
     |> Map.put(:name, op.name)
+    |> Map.put(:soap_action,  op.soap.soap_action)
+    |> Map.put(:soap_style,   op.soap.style)
+    |> Map.put(:input_message_ns, op.input[:namespace])
+    |> Map.put(:output_message_ns, op.output[:namespace])
     |> Map.put(:input_message,  get_message(input_message_name, wsdl))
     |> Map.put(:output_message, get_message(output_message_name, wsdl))
     |> Map.put(:faults,         get_faults(oper.faults, wsdl))

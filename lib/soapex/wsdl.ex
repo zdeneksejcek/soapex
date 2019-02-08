@@ -18,7 +18,6 @@ defmodule Soapex.Wsdl do
 
   @spec parse_files(map()) :: map()
   def parse_files(files) do
-
     %{
       services:   get_services(files.wsdl, files.nss),
       bindings:   get_bindings(files.wsdl, files.nss),
@@ -34,7 +33,7 @@ defmodule Soapex.Wsdl do
                  |> Xsd.get_types(nss)
 
     imported_types = imports
-                     |> Enum.map(fn im -> Xsd.get_types(im.content, nss) end) #
+                     |> Enum.map(fn im -> Xsd.get_types(im.content) end)
 
     %{
       simple_types:   join_lists(local_type, imported_types, :simple_types),
@@ -71,7 +70,7 @@ defmodule Soapex.Wsdl do
 
   defp get_binding(bin_el, nss) do
     binding =           bin_el |> xpath(~x".", name: ~x"./@name"s, type: ~x"./@type"s)
-    soap =              bin_el |> xpath(~x"./#{ns("binding", nss.soap10)} | ./#{ns("binding", nss.soap12)}"o, style: ~x"./@style"s, transport: ~x"./@transport"s)
+    soap =              bin_el |> xpath(~x"./#{ns("binding", nss.soap11)} | ./#{ns("binding", nss.soap12)}"o, style: ~x"./@style"s, transport: ~x"./@transport"s)
 
     operations = bin_el
                  |> xpath(~x"./#{ns("operation", nss.wsdl)}"l)
@@ -85,7 +84,7 @@ defmodule Soapex.Wsdl do
 
   defp get_binding_operation(op_el, nss) do
     operation =         op_el |> xpath(~x".", name: ~x"./@name"s)
-    soap =              op_el |> xpath(~x"./#{ns("operation", nss.soap10)} | ./#{ns("operation", nss.soap12)}"o, style: ~x"./@style"s, soap_action: ~x"./@soapAction"s)
+    soap =              op_el |> xpath(~x"./#{ns("operation", nss.soap11)} | ./#{ns("operation", nss.soap12)}"o, style: ~x"./@style"s, soap_action: ~x"./@soapAction"s)
 
     input =             get_operation_body(op_el, nss, "input")
     output =            get_operation_body(op_el, nss, "output")
@@ -100,14 +99,14 @@ defmodule Soapex.Wsdl do
 
   defp get_operation_body(op_el, nss, type) do
     op_el
-    |> xpath(~x"./#{ns(type, nss.wsdl)}/#{ns("body", nss.soap10)} | ./#{ns(type, nss.wsdl)}/#{ns("body", nss.soap12)}"o, namespace: ~x"./@namespace"s, use: ~x"./@use"s)
+    |> xpath(~x"./#{ns(type, nss.wsdl)}/#{ns("body", nss.soap11)} | ./#{ns(type, nss.wsdl)}/#{ns("body", nss.soap12)}"o, namespace: ~x"./@namespace"s, use: ~x"./@use"s)
   end
 
   defp get_binding_faults(op_el, nss) do
     op_el
     |> xpath(~x"./#{ns("fault", nss.wsdl)}"l)
     |> Enum.map(fn f_el ->
-        xpath(f_el, ~x".", name: ~x"./@name"s, use: ~x"./#{ns("fault", nss.soap10)}/@use | ./#{ns("fault", nss.soap12)}/@use"s)
+        xpath(f_el, ~x".", name: ~x"./@name"s, use: ~x"./#{ns("fault", nss.soap11)}/@use | ./#{ns("fault", nss.soap12)}/@use"s)
     end)
   end
 
@@ -163,12 +162,12 @@ defmodule Soapex.Wsdl do
             binding = remove_ns(xpath(p, ~x"./@binding"s))
             name = xpath(p, ~x"./@name"s)
 
-            trans = [nss.soap10, nss.soap12]
+            trans = [nss.soap11, nss.soap12]
                     |> Enum.map(fn ns -> xpath(p, ~x"./#{ns("address", ns)}/@location"s) |> to_nil end)
 
             port = case trans do
                       [nil, nil] -> %{protocol: :unknown}
-                      [soap10, nil]  -> %{protocol: :soap10, location: soap10}
+                      [soap11, nil]  -> %{protocol: :soap11, location: soap11}
                       [nil, soap12] -> %{protocol: :soap12, location: soap12}
                    end
 

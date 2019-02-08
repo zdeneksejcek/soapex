@@ -8,8 +8,21 @@ defmodule Soapex.Util do
     namespaces
     |> Enum.find(fn {_, _, _, _, url} -> url == String.to_atom(uri) end)
     |> no_nil(fn value -> elem(value, 3) end)
+    |> no_nil(&List.to_string/1)
   end
 
+  def get_namespaces(root) do
+    namespaces = root |> xpath(~x"//namespace::*"l)
+
+    %{
+      wsdl:    get_schema_prefix(namespaces, "http://schemas.xmlsoap.org/wsdl/"),
+      schema:  get_schema_prefix(namespaces, "http://www.w3.org/2001/XMLSchema"),
+      soap11:  get_schema_prefix(namespaces, "http://schemas.xmlsoap.org/wsdl/soap/"),
+      soap12:  get_schema_prefix(namespaces, "http://schemas.xmlsoap.org/wsdl/soap12/")
+    }
+  end
+
+  def ns(name, ""), do: "#{name}"
   def ns(name, []), do: "#{name}"
   def ns(name, namespace), do: "#{namespace}:#{name}"
 
@@ -29,6 +42,8 @@ defmodule Soapex.Util do
       [name] -> name
     end
   end
+
+  def no_nil_or_empty_value(nil), do: nil
 
   def no_nil_or_empty_value(map) do
     map

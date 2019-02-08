@@ -1,23 +1,4 @@
 soapex
 ******
-mix soapex.gen %path%
--> generates module with submodule per service
 
-defmodule SoapClient do
-    defmodule FirstService do
-        
-    end
-
-    defmodule SecondService do
-
-    end
-end
-
-defmodule Benchmark do
-  def measure(function) do
-    function
-    |> :timer.tc
-    |> elem(0)
-    |> Kernel./(1_000_000)
-  end
-end
+:erlang.system_flag(:backtrace_depth, 20)
