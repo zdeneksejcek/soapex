@@ -1,6 +1,10 @@
 defmodule Soapex.Wsdl do
   @moduledoc false
 
+  # rpc vs document
+  # https://www.ibm.com/support/knowledgecenter/en/SSB27H_6.2.0/fa2ws_ovw_soap_syntax_lit.html
+  # https://www.ibm.com/developerworks/library/ws-usagewsdl/index.html
+
   import SweetXml
   import Soapex.Util
   alias Soapex.Fetcher
@@ -56,8 +60,14 @@ defmodule Soapex.Wsdl do
   end
 
   defp get_message_parts(message, nss) do
-    message
-    |> xpath(~x"//#{ns("part", nss.wsdl)}"l, name: ~x"./@name"s, element: ~x"./@element"s, type: ~x"./@type"s)
+    parts = message
+            |> xpath(~x"//#{ns("part", nss.wsdl)}"l, name: ~x"./@name"s, element: ~x"./@element"s, type: ~x"./@type"s)
+
+    parts
+    |> Enum.map(fn p ->
+          Map.put(p, :type, type(p[:type],        nss.schema))
+          |> Map.put(:element, type(p[:element],  nss.schema))
+       end)
     |> Enum.map(&no_nil_or_empty_value/1)
   end
 
@@ -89,17 +99,27 @@ defmodule Soapex.Wsdl do
     input =             get_operation_body(op_el, nss, "input")
     output =            get_operation_body(op_el, nss, "output")
 
+    input_header =      get_operation_header(op_el, nss, "input")
+    output_header =     get_operation_header(op_el, nss, "output")
+
     Map.merge(operation, %{
       soap:   soap,
       input:  input,
+      input_header: input_header,
+      output_header: output_header,
       output: output,
       faults: get_binding_faults(op_el, nss)
-    })
+    }) |> no_nil_or_empty_value
   end
 
   defp get_operation_body(op_el, nss, type) do
     op_el
     |> xpath(~x"./#{ns(type, nss.wsdl)}/#{ns("body", nss.soap11)} | ./#{ns(type, nss.wsdl)}/#{ns("body", nss.soap12)}"o, namespace: ~x"./@namespace"s, use: ~x"./@use"s)
+  end
+
+  defp get_operation_header(op_el, nss, type) do
+    op_el
+    |> xpath(~x"./#{ns(type, nss.wsdl)}/#{ns("header", nss.soap11)} | ./#{ns(type, nss.wsdl)}/#{ns("header", nss.soap12)}"o, part: ~x"./@part"s, message: ~x"./@message"s, use: ~x"./@use"s)
   end
 
   defp get_binding_faults(op_el, nss) do

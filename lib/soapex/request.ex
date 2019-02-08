@@ -12,7 +12,9 @@ defmodule Soapex.Request do
     envelope = create_envelope(data, body)
     headers = get_headers(data)
 
-    post(data.url, envelope, headers, data)
+    body
+
+    # post(data.url, envelope, headers, data)
   end
 
   defp get_operation(t_wsdl, {service, port} = port_path, operation) do
@@ -154,6 +156,15 @@ defmodule Soapex.Request do
     throw "soap_12 fault parsing not available yet"
   end
 end
+
+#<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:blz="http://thomas-bayer.com/blz/">
+#   <soap:Header/>
+#   <soap:Body>
+#      <blz:getBank>
+#         <blz:blz>50010517</blz:blz>
+#      </blz:getBank>
+#   </soap:Body>
+#</soap:Envelope>
 
 #<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://www.zasilkovna.cz/api/soap.wsdl">
 #   <SOAP-ENV:Body>
