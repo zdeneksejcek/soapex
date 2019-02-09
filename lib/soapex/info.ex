@@ -4,9 +4,9 @@ defmodule Soapex.Info do
   def get(wsdl) do
     wsdl.services
     |> Enum.map(fn ser -> %{
-      name: ser.name,
-      ports: ser.ports |> Enum.map(fn port -> get_port(port, wsdl) end)
-    } end)
+          name: ser.name,
+          ports: ser.ports |> Enum.map(fn port -> get_port(port, wsdl) end)
+       } end)
   end
 
   defp get_port(port, wsdl) do
@@ -23,18 +23,18 @@ defmodule Soapex.Info do
     port_type =       wsdl.port_types |> Enum.find(fn pt -> pt.name == port_type_name end)
 
     binding.operations
-    |> Enum.map(fn op -> get_operation(op, port_type, wsdl) end)
+    |> Enum.map(fn op -> get_operation(op, port_type, wsdl, binding.soap.style) end)
   end
 
-  defp get_operation(op, port_type, wsdl) do
+  defp get_operation(op, port_type, wsdl, binding_style) do
     oper = port_type.operations[op.name]
     input_message_name =  remove_ns(oper.input_message)
     output_message_name = remove_ns(oper.output_message)
 
     oper
     |> Map.put(:name, op.name)
-    |> Map.put(:soap_action,  op.soap.soap_action)
-    |> Map.put(:soap_style,   op.soap.style)
+    |> Map.put(:soap_action,  op[:soap_action])
+    |> Map.put(:soap_style,   binding_style)
     |> Map.put(:input_message_ns, op.input[:namespace])
     |> Map.put(:output_message_ns, op.output[:namespace])
     |> Map.put(:input_message,  get_message(input_message_name, wsdl))

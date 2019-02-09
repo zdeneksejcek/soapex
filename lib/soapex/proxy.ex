@@ -5,7 +5,9 @@ defmodule Soapex.Proxy do
     quote bind_quoted: [parms: parms] do
       @moduledoc "This is **SOAPex** proxy module"
 
-      @t_wsdl Soapex.Info.get(Soapex.Wsdl.get_wsdl(parms[:wsdl_path]))
+      wsdl = Soapex.Wsdl.get_wsdl(parms[:wsdl_path])
+      @t_wsdl Soapex.Info.get(wsdl)
+      @wsdl   wsdl
 
       Enum.each(@t_wsdl, fn ser ->
         Enum.each(ser.ports, fn port ->
@@ -29,7 +31,7 @@ defmodule Soapex.Proxy do
               operation_name = unquote(op.name)
               params_map = unquote(params_list)  |> Enum.into(%{})
 
-              Soapex.Request.create_request(@t_wsdl, port_path, operation_name, params_map)
+              Soapex.Request.create_request(@t_wsdl, @wsdl, port_path, operation_name, params_map)
             end
           end)
         end)

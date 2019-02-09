@@ -88,13 +88,22 @@ defmodule Soapex.Wsdl do
 
     Map.merge(binding, %{
       operations: operations,
-      soap:       soap
+      soap:       soap |> update_style
     })
   end
 
+  defp update_style(nil), do: nil
+  defp update_style(map) do
+    Map.put(map, :style, get_style(map[:style]))
+  end
+
+  defp get_style(nil),        do: nil
+  defp get_style("rpc"),      do: :rpc
+  defp get_style("document"), do: :document
+
   defp get_binding_operation(op_el, nss) do
     operation =         op_el |> xpath(~x".", name: ~x"./@name"s)
-    soap =              op_el |> xpath(~x"./#{ns("operation", nss.soap11)} | ./#{ns("operation", nss.soap12)}"o, style: ~x"./@style"s, soap_action: ~x"./@soapAction"s)
+    soap_action =       op_el |> xpath(~x"./#{ns("operation", nss.soap11)}/@soapAction | ./#{ns("operation", nss.soap12)}/@soapAction"os)
 
     input =             get_operation_body(op_el, nss, "input")
     output =            get_operation_body(op_el, nss, "output")
@@ -103,11 +112,11 @@ defmodule Soapex.Wsdl do
     output_header =     get_operation_header(op_el, nss, "output")
 
     Map.merge(operation, %{
-      soap:   soap,
-      input:  input,
-      input_header: input_header,
-      output_header: output_header,
-      output: output,
+      soap_action:    soap_action,
+      input:          input,
+      input_header:   input_header,
+      output_header:  output_header,
+      output:         output,
       faults: get_binding_faults(op_el, nss)
     }) |> no_nil_or_empty_value
   end

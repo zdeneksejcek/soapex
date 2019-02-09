@@ -5,11 +5,11 @@ defmodule Soapex.Request do
   import SweetXml
   import Soapex.Util
 
-  def create_request(t_wsdl, port_path, operation_name, parameters) do
+  def create_request(t_wsdl, wsdl, port_path, operation_name, parameters) do
     data = get_operation(t_wsdl, port_path, operation_name)
 
-    body = create_body(data.operation.input_message, parameters)
-    envelope = create_envelope(data, body)
+    body = create_body(data.operation, parameters, wsdl.types)
+    # envelope = create_envelope(data, body)
     headers = get_headers(data)
 
     body
@@ -25,8 +25,7 @@ defmodule Soapex.Request do
 
     %{
       url:        port.location,
-      operation:  port.operations
-                  |> Enum.find(fn o -> o.name == operation end),
+      operation:  port.operations |> Enum.find(fn o -> o.name == operation end),
       protocol:   port.protocol
     }
   end
@@ -60,11 +59,31 @@ defmodule Soapex.Request do
           ]) |> XmlBuilder.generate(format: :none)
   end
 
-  defp create_body(im, parameters) do
-    IO.inspect(im)
-     element(im.name, [
-        im.parts |> Enum.map(fn p -> element(p.name, parameters[p.name]) end)
-     ])
+  defp create_body(op, parameters, types) do
+    case op.soap_style do
+      :document ->
+        create_body_document(op, parameters, types)
+      :rpc ->
+        create_body_rpc(op, parameters, types)
+    end
+  end
+
+  defp create_body_rpc(op, parameters, _types) do
+    element(op.name, [
+      op.input_message.parts |> Enum.map(fn p -> element(p.name, parameters[p.name]) end)
+    ])
+  end
+
+  defp create_body_document(op, parameters, types) do
+    parts = op.input_message.parts
+
+    case parts do
+      [part] ->
+        {_ns, element_name} = part.element
+        root_element = types.elements |> Enum.find(&(&1.name == element_name))
+      _ ->
+        throw "Only one message part is supported at the time for document style"
+    end
   end
 
   defp post(url, body, headers, data) do
