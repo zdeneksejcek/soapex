@@ -22,6 +22,25 @@ defmodule Soapex.Util do
     }
   end
 
+  def ns_xpath(parent, query) do
+    xpath(parent,
+          query
+          |> add_namespace("wsdl",   "http://schemas.xmlsoap.org/wsdl/")
+          |> add_namespace("xsd",    "http://www.w3.org/2001/XMLSchema")
+          |> add_namespace("soap11", "http://schemas.xmlsoap.org/wsdl/soap/")
+          |> add_namespace("soap12", "http://schemas.xmlsoap.org/wsdl/soap12/"))
+  end
+
+  def ns_xpath(parent, query, subspec) do
+    xpath(parent,
+          query
+          |> add_namespace("wsdl",   "http://schemas.xmlsoap.org/wsdl/")
+          |> add_namespace("xsd",    "http://www.w3.org/2001/XMLSchema")
+          |> add_namespace("soap11", "http://schemas.xmlsoap.org/wsdl/soap/")
+          |> add_namespace("soap12", "http://schemas.xmlsoap.org/wsdl/soap12/"), subspec)
+  end
+
+  def ns(name, nil), do: "#{name}"
   def ns(name, ""), do: "#{name}"
   def ns(name, []), do: "#{name}"
   def ns(name, namespace), do: "#{namespace}:#{name}"
@@ -38,7 +57,7 @@ defmodule Soapex.Util do
 
   def remove_ns(type) when is_binary(type) do
     case String.split(type, ":", trim: true) do
-      [ns, name] -> name
+      [_ns, name] -> name
       [name] -> name
     end
   end
@@ -59,12 +78,12 @@ defmodule Soapex.Util do
   end
 
   # https://www.w3.org/2001/XMLSchema-datatypes
-  def type("", _schema_ns), do: nil
-  def type(nil, _schema_ns), do: nil
+  def type(""), do: nil
+  def type(nil), do: nil
 
-  def type(value, schema_ns) do
+  def type(value) do
     case String.split(value, ":") do
-      [^schema_ns, b_type] ->
+      [_, b_type] ->
         case b_type do
           "string" -> :string
           "boolean" -> :boolean
@@ -103,7 +122,7 @@ defmodule Soapex.Util do
           "gDay" -> :g_day
           "gMonth" -> :g_month
           dt ->
-            throw "Unsupported schema data type: #{dt}"
+            dt
         end
       [ns, custom_type] ->
         {ns, custom_type}

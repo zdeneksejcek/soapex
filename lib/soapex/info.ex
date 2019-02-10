@@ -1,20 +1,23 @@
 defmodule Soapex.Info do
   @moduledoc false
 
-  def get(wsdl) do
+  def get_operations(wsdl) do
     wsdl.services
-    |> Enum.map(fn ser -> %{
-          name: ser.name,
-          ports: ser.ports |> Enum.map(fn port -> get_port(port, wsdl) end)
-       } end)
+    |> Enum.map(
+         fn ser -> {
+              ser.name,
+              ser.ports |> Enum.map(fn port -> get_port(port, wsdl) end) |> Map.new
+            }
+         end) |> Map.new
   end
 
   defp get_port(port, wsdl) do
-    %{name:     port.name,
-      protocol: port.protocol,
-      location: port.location,
-
-      operations: get_operations(port.binding, wsdl)}
+    {
+      port.name,
+      %{protocol: port.protocol,
+        location: port.location,
+        operations: get_operations(port.binding, wsdl)}
+    }
   end
 
   defp get_operations(bin_name, wsdl) do
@@ -24,6 +27,7 @@ defmodule Soapex.Info do
 
     binding.operations
     |> Enum.map(fn op -> get_operation(op, port_type, wsdl, binding.soap.style) end)
+    |> Map.new
   end
 
   defp get_operation(op, port_type, wsdl, binding_style) do
@@ -31,15 +35,19 @@ defmodule Soapex.Info do
     input_message_name =  remove_ns(oper.input_message)
     output_message_name = remove_ns(oper.output_message)
 
-    oper
-    |> Map.put(:name, op.name)
-    |> Map.put(:soap_action,  op[:soap_action])
-    |> Map.put(:soap_style,   binding_style)
-    |> Map.put(:input_message_ns, op.input[:namespace])
-    |> Map.put(:output_message_ns, op.output[:namespace])
-    |> Map.put(:input_message,  get_message(input_message_name, wsdl))
-    |> Map.put(:output_message, get_message(output_message_name, wsdl))
-    |> Map.put(:faults,         get_faults(oper.faults, wsdl))
+    {
+      op.name,
+      oper
+      |> Map.merge(%{
+        soap_action:        op[:soap_action],
+        soap_style:         binding_style,
+        input_message_ns:   op.input[:namespace],
+        output_message_ns:  op.output[:namespace],
+        input_message:      get_message(input_message_name, wsdl),
+        output_message:     get_message(output_message_name, wsdl),
+        faults:             get_faults(oper.faults, wsdl)
+      })
+    }
   end
 
   defp get_message(mess_name, wsdl) do

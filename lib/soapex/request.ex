@@ -9,15 +9,15 @@ defmodule Soapex.Request do
     data = get_operation(t_wsdl, port_path, operation_name)
 
     body = create_body(data.operation, parameters, wsdl.types)
-    # envelope = create_envelope(data, body)
-    headers = get_headers(data)
+    envelope = create_envelope(data, body)
+    _headers = get_headers(data)
 
-    body
+    envelope
 
     # post(data.url, envelope, headers, data)
   end
 
-  defp get_operation(t_wsdl, {service, port} = port_path, operation) do
+  defp get_operation(t_wsdl, {service, port}, operation) do
     service = t_wsdl
               |> Enum.find(fn ser -> ser.name == service end)
 
@@ -52,7 +52,7 @@ defmodule Soapex.Request do
                   :soap12 -> "http://www.w3.org/2003/05/soap-envelop"
                  end
 
-    doc = element("env:Envelope", %{"xmlns:env" => env_ns_url, "xmlns:s" => data.operation.input_message_ns}, [
+    _doc = element("env:Envelope", %{"xmlns:env" => env_ns_url, "xmlns:s" => data.operation.input_message_ns}, [
             element("env:Body", [
               body
             ])
