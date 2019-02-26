@@ -8,7 +8,7 @@ defmodule Soapex.Request do
   def create_request(t_wsdl, wsdl, port_path, operation_name, parameters) do
     data = get_operation(t_wsdl, port_path, operation_name)
 
-    body = create_body(data.operation, parameters, wsdl.schemas)
+    body = create_body(data.operation, parameters, wsdl.schemes)
     envelope = create_envelope(data, body)
     headers = get_headers(data)
 
@@ -57,16 +57,16 @@ defmodule Soapex.Request do
           ]) |> XmlBuilder.generate(format: :none)
   end
 
-  defp create_body(op, parameters, schemas) do
+  defp create_body(op, parameters, schemes) do
     case op.soap_style do
       :document ->
-        create_body_document(op, parameters, schemas)
+        create_body_document(op, parameters, schemes)
       :rpc ->
-        create_body_rpc(op, parameters, schemas)
+        create_body_rpc(op, parameters, schemes)
     end
   end
 
-  defp create_body_rpc(op, parameters, _schemas) do
+  defp create_body_rpc(op, parameters, _schemes) do
     element(op.name, [
       op.input_message.parts
       |> Enum.map(fn p -> create_body_element(p.name, parameters[p.name]) end)
