@@ -17,7 +17,7 @@ defmodule Soapex.Fetcher do
     |> ns_xpath(~x"//wsdl:definitions/wsdl:types/xsd:schema/xsd:import"l)
     |> Enum.map(fn el -> ns_xpath(el, ~x".",
                     namespace: ~x"./@namespace"s,
-                    schema_location: ~x"./@schemaLocation"s |> transform_by(&to_nil/1),
+                    schema_location: ~x"./@schemaLocation"s |> transform_by(&to_nil/1)
                   )end)
     |> Enum.reject(fn p->p.schema_location == nil end)
     |> Enum.map(&fetch_import/1)

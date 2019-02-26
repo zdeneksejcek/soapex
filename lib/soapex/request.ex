@@ -84,14 +84,14 @@ defmodule Soapex.Request do
     element(param_name, param_value)
   end
 
-  defp create_body_document(op, parameters, types) do
+  defp create_body_document(op, _parameters, types) do
     parts = op.input_message.parts
 
     case parts do
       [part] ->
         IO.inspect(part)
         element_name = part.element
-        root_element = types.elements |> Enum.find(&(&1.name == element_name))
+        _root_element = types.elements |> Enum.find(&(&1.name == element_name))
       _ ->
         throw "Only one message part is supported at the time for document style"
     end
@@ -169,7 +169,7 @@ defmodule Soapex.Request do
     Map.put_new(nss, :env_ns, env_ns)
   end
 
-  defp parse_fault_soap11(env_ns, response, op_ns) do
+  defp parse_fault_soap11(env_ns, response, _op_ns) do
     fault = response |> xpath(~x"//#{ns("Envelope", env_ns)}/#{ns("Body", env_ns)}/#{ns("Fault", env_ns)}"e,
                     code:   ~x"./faultcode/text()"s,
                     string: ~x"./faultstring/text()"s,

@@ -130,8 +130,6 @@ defmodule Soapex.Util do
           dt ->
             dt
         end
-      [ns, custom_type] ->
-        {ns, custom_type}
       [custom_type] ->
         custom_type
     end
