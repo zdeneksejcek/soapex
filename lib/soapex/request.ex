@@ -8,7 +8,7 @@ defmodule Soapex.Request do
   def create_request(t_wsdl, wsdl, port_path, operation_name, parameters) do
     data = get_operation(t_wsdl, port_path, operation_name)
 
-    body = create_body(data.operation, parameters, wsdl.types)
+    body = create_body(data.operation, parameters, wsdl.schemas)
     envelope = create_envelope(data, body)
     headers = get_headers(data)
 
@@ -57,16 +57,16 @@ defmodule Soapex.Request do
           ]) |> XmlBuilder.generate(format: :none)
   end
 
-  defp create_body(op, parameters, types) do
+  defp create_body(op, parameters, schemas) do
     case op.soap_style do
       :document ->
-        create_body_document(op, parameters, types)
+        create_body_document(op, parameters, schemas)
       :rpc ->
-        create_body_rpc(op, parameters, types)
+        create_body_rpc(op, parameters, schemas)
     end
   end
 
-  defp create_body_rpc(op, parameters, _types) do
+  defp create_body_rpc(op, parameters, _schemas) do
     element(op.name, [
       op.input_message.parts
       |> Enum.map(fn p -> create_body_element(p.name, parameters[p.name]) end)
@@ -84,14 +84,14 @@ defmodule Soapex.Request do
     element(param_name, param_value)
   end
 
-  defp create_body_document(op, _parameters, types) do
+  defp create_body_document(op, _parameters, _schemas) do
     parts = op.input_message.parts
 
     case parts do
       [part] ->
         IO.inspect(part)
-        element_name = part.element
-        _root_element = types.elements |> Enum.find(&(&1.name == element_name))
+        # element_name = part.element
+        # _root_element = types.elements |> Enum.find(&(&1.name == element_name))
       _ ->
         throw "Only one message part is supported at the time for document style"
     end
