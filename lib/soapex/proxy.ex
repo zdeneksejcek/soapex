@@ -3,6 +3,7 @@ defmodule Soapex.Proxy do
 
   defmacro __using__(parms) do
     quote bind_quoted: [parms: parms] do
+      HTTPoison.start()
       @moduledoc "This is **SOAPex** proxy module"
 
       wsdl = Soapex.Wsdl.get_wsdl(parms[:wsdl_path])
