@@ -6,8 +6,8 @@ defmodule Soapex.Fetcher do
 
   @spec get_files(String.t()) :: Map.t()
   def get_files(path) do
-    wsdl_root = get_root(path)
-    parsed_imports = get_imports(wsdl_root)
+    wsdl_root =       get_root(path)
+    parsed_imports =  get_imports(wsdl_root)
 
     {:ok, %{wsdl: wsdl_root, imports: parsed_imports}}
   end
@@ -15,7 +15,11 @@ defmodule Soapex.Fetcher do
   defp get_imports(wsdl_root) do
     wsdl_root
     |> ns_xpath(~x"//wsdl:definitions/wsdl:types/xsd:schema/xsd:import"l)
-    |> Enum.map(fn el -> ns_xpath(el, ~x".", namespace: ~x"./@namespace"s, schema_location: ~x"./@schemaLocation"s) end)
+    |> Enum.map(fn el -> ns_xpath(el, ~x".",
+                    namespace: ~x"./@namespace"s,
+                    schema_location: ~x"./@schemaLocation"s |> transform_by(&to_nil/1),
+                  )end)
+    |> Enum.reject(fn p->p.schema_location == nil end)
     |> Enum.map(&fetch_import/1)
   end
 

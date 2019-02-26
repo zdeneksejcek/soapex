@@ -23,21 +23,26 @@ defmodule Soapex.Util do
   end
 
   def ns_xpath(parent, query) do
-    xpath(parent,
-          query
-          |> add_namespace("wsdl",   "http://schemas.xmlsoap.org/wsdl/")
-          |> add_namespace("xsd",    "http://www.w3.org/2001/XMLSchema")
-          |> add_namespace("soap11", "http://schemas.xmlsoap.org/wsdl/soap/")
-          |> add_namespace("soap12", "http://schemas.xmlsoap.org/wsdl/soap12/"))
+    xpath(parent, query |> add_nss)
   end
 
   def ns_xpath(parent, query, subspec) do
-    xpath(parent,
-          query
-          |> add_namespace("wsdl",   "http://schemas.xmlsoap.org/wsdl/")
-          |> add_namespace("xsd",    "http://www.w3.org/2001/XMLSchema")
-          |> add_namespace("soap11", "http://schemas.xmlsoap.org/wsdl/soap/")
-          |> add_namespace("soap12", "http://schemas.xmlsoap.org/wsdl/soap12/"), subspec)
+    xpath(parent, query |> add_nss, subspec |> add_nss_subspec)
+  end
+
+  defp add_nss_subspec(subspec) do
+    subspec
+    |> Enum.map(fn {key, value} ->
+                  {key, value |> add_nss}
+                end)
+  end
+
+  def add_nss(query) do
+    query
+    |> add_namespace("wsdl",   "http://schemas.xmlsoap.org/wsdl/")
+    |> add_namespace("xsd",    "http://www.w3.org/2001/XMLSchema")
+    |> add_namespace("soap11", "http://schemas.xmlsoap.org/wsdl/soap/")
+    |> add_namespace("soap12", "http://schemas.xmlsoap.org/wsdl/soap12/")
   end
 
   def ns(name, nil), do: "#{name}"
@@ -45,8 +50,9 @@ defmodule Soapex.Util do
   def ns(name, []), do: "#{name}"
   def ns(name, namespace), do: "#{namespace}:#{name}"
 
-  def to_nil(""), do: nil
-  def to_nil(va), do: va
+  def to_nil(%{}),  do: nil
+  def to_nil(""),   do: nil
+  def to_nil(va),   do: va
 
   def ensure_list(value) do
     case value do

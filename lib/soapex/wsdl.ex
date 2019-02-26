@@ -27,27 +27,19 @@ defmodule Soapex.Wsdl do
       bindings:   get_bindings(files.wsdl),
       port_types: get_port_types(files.wsdl),
       messages:   get_messages(files.wsdl),
-      types:      get_types(files.wsdl, files.imports)
+      schemes:    get_schemes(files.wsdl, files.imports)
     }
   end
 
-  def get_types(wsdl, imports) do
-    local_type = wsdl
-                 |> ns_xpath(~x"//wsdl:definitions/wsdl:types/xsd:schema")
-                 |> Xsd.get_types
+  def get_schemes(wsdl, imports) do
+    local_schema = wsdl
+                   |> ns_xpath(~x"//wsdl:definitions/wsdl:types/xsd:schema")
+                   |> Xsd.get_schema
 
-    imported_types = imports
-                     |> Enum.map(&Xsd.get_types/1)
+    imported_schemas = imports
+                       |> Enum.map(fn im -> Xsd.get_schema(im.content) end)
 
-    %{
-      simple_types:   join_lists(local_type, imported_types, :simple_types),
-      complex_types:  join_lists(local_type, imported_types, :complex_types),
-      elements:       join_lists(local_type, imported_types, :elements),
-    }
-  end
-
-  defp join_lists(local_type, imported_types, name) do
-    local_type[name] ++ Enum.reduce(imported_types, [], fn v, acc -> v[name] ++ acc end)
+    [local_schema | imported_schemas]
   end
 
   defp get_messages(wsdl) do

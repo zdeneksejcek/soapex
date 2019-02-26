@@ -4,48 +4,71 @@ defmodule Soapex.Xsd do
   import SweetXml
   import Soapex.Util
 
-  def get_types(schema) do
-    # nss = get_namespaces(schema)
-    schema_el = schema |> ns_xpath(~x"//xsd:schema")
-
-    get_schema(schema_el)
-  end
-
-  @spec get_types(String.t()) :: map
-  def get_types(schema) do
+  @spec get_schema(String.t()) :: map
+  def get_schema(schema) do
     if schema == nil, do: throw "Schema is nil"
 
-    schema_el = schema |> ns_xpath(~x"//xsd:schema"oe)
-
-    get_schema(schema_el)
+    get_schema_internal(schema)
   end
 
-  def get_schema(schema_el) do
+  defp get_schema_internal(schema_el) do
     %{
-      elements:       get_elements(schema_el),
-      complex_types:  get_complex_types(schema_el),
-      simple_types:   get_simple_types(schema_el)
+      target_ns:              schema_el |> ns_xpath(~x"@targetNamespace"so),
+      attribute_form_default: get_qualified_unqualified(schema_el, "attributeFormDefault"),
+      element_form_default:   get_qualified_unqualified(schema_el, "elementFormDefault"),
+
+      elements:         get_elements(schema_el),
+      complex_types:    get_complex_types(schema_el),
+      simple_types:     get_simple_types(schema_el),
+      attribute_groups: get_attribute_groups(schema_el)
     }
+  end
+
+  defp get_qualified_unqualified(schema_el, att_name) do
+    case schema_el |> ns_xpath(~x"@#{att_name}"so) do
+      "" ->
+        :unqualified
+      nil ->
+        :unqualified
+      "unqualified" ->
+        :unqualified
+      "qualified" ->
+        :qualified
+    end
   end
 
   defp get_simple_types(schema_el) do
     schema_el
     |> ns_xpath(~x"./xsd:simpleType"l)
-    |> Enum.map(fn node -> get_simple_type(node) end)
+    |> map_simple_types
     |> Enum.map(&no_nil_or_empty_value/1)
   end
 
   defp get_simple_type(node) do
-    name = node |> ns_xpath(~x".", name: ~x"./@name"s)
-    restriction = node |> get_restriction
-
+    name = node |> ns_xpath(~x".",
+                     name: ~x"./@name"s,
+                     restriction: ~x"." |> transform_by(&get_restriction/1),
+                     union: ~x"." |> transform_by(&get_union/1)
+                    )
     name
-    |> Map.merge(%{restriction: restriction})
     |> no_nil_or_empty_value
   end
 
+  defp get_union(node) do
+    node
+    |> ns_xpath(~x"./xsd:union"oe,
+         member_types: ~x"@memberTypes",
+         simple_types: ~x"./xsd:simpleType"l |> transform_by(&map_simple_types/1))
+    |> no_nil_or_empty_value
+  end
+
+  defp map_simple_types(simple_type_els) do
+    simple_type_els
+    |> Enum.map(&get_simple_type/1)
+  end
+
   defp get_restriction(node) do
-    restriction = node |> ns_xpath(~x"./xsd:restriction"o,
+    restriction = node |> ns_xpath(~x"./xsd:restriction"oe,
           base:           ~x"./@base"s,
           length:         ~x"./xsd:length/@value"s,
           min_length:     ~x"./xsd:minLength/@value"s,
@@ -76,6 +99,33 @@ defmodule Soapex.Xsd do
     |> ensure_list
     |> Enum.map(fn node -> ns_xpath(node, ~x"./@value"s) end)
   end
+
+  defp get_attribute_groups(parent) do
+    parent
+    |> ns_xpath(~x"./xsd:attributeGroup"l)
+    |> map_attribute_group
+  end
+
+  defp map_attribute_group(group_els) do
+    group_els
+    |> Enum.map(&get_attribute_group/1)
+  end
+
+  defp get_attribute_group(group_el) do
+    name = group_el |> ns_xpath(~x".",
+                        name: ~x"./@name"os,
+                        ref: ~x"./@ref"os,
+                        any_attribute: ~x"./xsd:anyAttribute"oe
+                      )
+    name
+    |> no_nil_or_empty_value
+  end
+
+#  defp get_any_attribute(nil), do: nil
+#  defp get_any_attribute(any_att_el) do
+#    any_att_el
+#    |>
+#  end
 
   @spec get_complex_types(String.t()) :: list(Map.t())
   defp get_complex_types(schema_el) do
@@ -119,18 +169,22 @@ defmodule Soapex.Xsd do
   @spec get_elements(String.t()) :: list(Map.t())
   defp get_elements(schema_el) do
     schema_el
-    |> xpath(~x"./xsd:element"l)
+    |> ns_xpath(~x"./xsd:element"l)
     |> Enum.map(fn node -> get_element(node) end)
   end
 
   defp get_element(node) do
-    header =        node |> ns_xpath(~x".", name: ~x"./@name"s, type: ~x"./@type"s, nillable: ~x"./@nillable"os, min_occurs: ~x"./@minOccurs"oi, max_occurs: ~x"./@maxOccurs"os)
-    complex_type =  node |> ns_xpath(~x"./xsd:complexType") |> get_complex_type
-
+    header =        node
+                    |> ns_xpath(~x".",
+                         name: ~x"./@name"s,
+                         ref: ~x"./@ref"s |> transform_by(&type/1),
+                         type: ~x"./@type"s |> transform_by(&type/1),
+                         nillable: ~x"./@nillable"os |> transform_by(&boolean/1),
+                         min_occurs: ~x"./@minOccurs"oi,
+                         max_occurs: ~x"./@maxOccurs"os,
+                         complex_type: ~x".//xsd:complexType"oe |> transform_by(&get_complex_type/1)
+                       )
     header
-    |> Map.put(:nillable, boolean(header[:nillable]))
-    |> Map.put(:type, type(header[:type]))
-    |> Map.merge(%{complex_type: complex_type})
     |> no_nil_or_empty_value
   end
 

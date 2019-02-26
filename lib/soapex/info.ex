@@ -39,6 +39,8 @@ defmodule Soapex.Info do
       op.name,
       oper
       |> Map.merge(%{
+        name:               op.name,
+        atom_name:          String.to_atom(Macro.underscore(op.name)),
         soap_action:        op[:soap_action],
         soap_style:         binding_style,
         input_message_ns:   op.input[:namespace],

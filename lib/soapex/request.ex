@@ -10,22 +10,20 @@ defmodule Soapex.Request do
 
     body = create_body(data.operation, parameters, wsdl.types)
     envelope = create_envelope(data, body)
-    _headers = get_headers(data)
+    headers = get_headers(data)
 
-    envelope
+    # {envelope, headers}
 
-    # post(data.url, envelope, headers, data)
+    post(data.url, envelope, headers, data)
   end
 
   defp get_operation(t_wsdl, {service, port}, operation) do
-    service = t_wsdl
-              |> Enum.find(fn ser -> ser.name == service end)
-
-    port = service.ports |> Enum.find(fn p -> p.name == port end)
+    service = t_wsdl[service]
+    port = service[port]
 
     %{
       url:        port.location,
-      operation:  port.operations |> Enum.find(fn o -> o.name == operation end),
+      operation:  port.operations[operation],
       protocol:   port.protocol
     }
   end
@@ -70,8 +68,20 @@ defmodule Soapex.Request do
 
   defp create_body_rpc(op, parameters, _types) do
     element(op.name, [
-      op.input_message.parts |> Enum.map(fn p -> element(p.name, parameters[p.name]) end)
+      op.input_message.parts
+      |> Enum.map(fn p -> create_body_element(p.name, parameters[p.name]) end)
     ])
+  end
+
+  defp create_body_element(param_name, param_value) when is_map(param_value) do
+    element(param_name, nil,
+              param_value |> Enum.map(fn p ->
+                {name, value} = p
+                create_body_element(name, value) end))
+  end
+
+  defp create_body_element(param_name, param_value) do
+    element(param_name, param_value)
   end
 
   defp create_body_document(op, parameters, types) do
@@ -79,7 +89,8 @@ defmodule Soapex.Request do
 
     case parts do
       [part] ->
-        {_ns, element_name} = part.element
+        IO.inspect(part)
+        element_name = part.element
         root_element = types.elements |> Enum.find(&(&1.name == element_name))
       _ ->
         throw "Only one message part is supported at the time for document style"
