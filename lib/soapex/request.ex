@@ -5,6 +5,8 @@ defmodule Soapex.Request do
   import SweetXml
   import Soapex.Util
 
+  require Logger
+
   def create_request(t_wsdl, wsdl, port_path, operation_name, parameters) do
     data = get_operation(t_wsdl, port_path, operation_name)
 
@@ -13,7 +15,7 @@ defmodule Soapex.Request do
     headers = get_headers(data)
 
     # {envelope, headers}
-
+    Logger.debug "Request body: #{inspect(envelope)}"
     post(data.url, envelope, headers, data)
   end
 
@@ -100,8 +102,10 @@ defmodule Soapex.Request do
   defp post(url, body, headers, data) do
     case HTTPoison.post(url, body, headers, follow_redirect: true, max_redirect: 3) do
       {:ok,  %HTTPoison.Response{status_code: status_code} = response} when status_code == 200 ->
+        Logger.debug "Response (200) body: #{inspect(body)}"
         {:ok, parse_success(response, data)}
       {:ok, %HTTPoison.Response{status_code: status_code} = response} when status_code >= 400 ->
+        Logger.debug "Response body (> 400): #{inspect(body)}"
         fault = parse_fault(response, data)
         {:fault, fault.name, fault.fault}
       {:error, error} ->
