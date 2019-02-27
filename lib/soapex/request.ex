@@ -102,10 +102,10 @@ defmodule Soapex.Request do
   defp post(url, body, headers, data) do
     case HTTPoison.post(url, body, headers, follow_redirect: true, max_redirect: 3) do
       {:ok,  %HTTPoison.Response{status_code: status_code} = response} when status_code == 200 ->
-        Logger.debug "Response (200) body: #{inspect(body)}"
+        Logger.debug "Response (200) body: #{inspect(response.body)}"
         {:ok, parse_success(response, data)}
       {:ok, %HTTPoison.Response{status_code: status_code} = response} when status_code >= 400 ->
-        Logger.debug "Response body (> 400): #{inspect(body)}"
+        Logger.debug "Response body (> 400): #{inspect(response.body)}"
         fault = parse_fault(response, data)
         {:fault, fault.name, fault.fault}
       {:error, error} ->
