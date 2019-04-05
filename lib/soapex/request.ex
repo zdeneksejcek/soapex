@@ -105,7 +105,7 @@ defmodule Soapex.Request do
         Logger.debug "Response (200) body: #{inspect(response.body)}"
         {:ok, parse_success(response, data)}
       {:ok, %HTTPoison.Response{status_code: status_code} = response} when status_code >= 400 ->
-        Logger.debug "Response body (> 400): #{inspect(response.body)}"
+        Logger.error "Response body (> 400): #{inspect(response.body)}"
         fault = parse_fault(response, data)
         {:fault, fault.name, fault.fault}
       {:error, error} ->
