@@ -15,7 +15,7 @@ defmodule Soapex.Request do
     headers = get_headers(data)
 
     # {envelope, headers}
-    Logger.debug "Request body: #{inspect(envelope)}"
+    Logger.debug("Request body: #{inspect(envelope)}")
     post(data.url, envelope, headers, data)
   end
 
@@ -24,45 +24,56 @@ defmodule Soapex.Request do
     port = service[port]
 
     %{
-      url:        port.location,
-      operation:  port.operations[operation],
-      protocol:   port.protocol
+      url: port.location,
+      operation: port.operations[operation],
+      protocol: port.protocol
     }
   end
 
   defp get_headers(data) do
-    action_header = case data.operation.soap_action do
-                      nil ->
-                        []
-                      soap_action ->
-                        ["SOAPaction": soap_action]
-                    end
+    action_header =
+      case data.operation.soap_action do
+        nil ->
+          []
 
-    content_type = case data.protocol do
-                    :soap11 -> ["Content-Type": "text/xml; charset=\"utf-8\""]
-                    :soap12 -> ["Content-Type": "application/soap+xml; charset=\"utf-8\""]
-                   end
+        soap_action ->
+          [SOAPaction: soap_action]
+      end
+
+    content_type =
+      case data.protocol do
+        :soap11 -> ["Content-Type": "text/xml; charset=\"utf-8\""]
+        :soap12 -> ["Content-Type": "application/soap+xml; charset=\"utf-8\""]
+      end
 
     action_header ++ content_type
   end
 
   defp create_envelope(data, body) do
-    env_ns_url = case data.protocol do
-                  :soap11 -> "http://schemas.xmlsoap.org/soap/envelope/"
-                  :soap12 -> "http://www.w3.org/2003/05/soap-envelop"
-                 end
+    env_ns_url =
+      case data.protocol do
+        :soap11 -> "http://schemas.xmlsoap.org/soap/envelope/"
+        :soap12 -> "http://www.w3.org/2003/05/soap-envelop"
+      end
 
-    _doc = element("env:Envelope", %{"xmlns:env" => env_ns_url, "xmlns:s" => data.operation.input_message_ns}, [
-            element("env:Body", [
-              body
-            ])
-          ]) |> XmlBuilder.generate(format: :none)
+    _doc =
+      element(
+        "env:Envelope",
+        %{"xmlns:env" => env_ns_url, "xmlns:s" => data.operation.input_message_ns},
+        [
+          element("env:Body", [
+            body
+          ])
+        ]
+      )
+      |> XmlBuilder.generate(format: :none)
   end
 
   defp create_body(op, parameters, schemes) do
     case op.soap_style do
       :document ->
         create_body_document(op, parameters, schemes)
+
       :rpc ->
         create_body_rpc(op, parameters, schemes)
     end
@@ -76,10 +87,15 @@ defmodule Soapex.Request do
   end
 
   defp create_body_element(param_name, param_value) when is_map(param_value) do
-    element(param_name, nil,
-              param_value |> Enum.map(fn p ->
-                {name, value} = p
-                create_body_element(name, value) end))
+    element(
+      param_name,
+      nil,
+      param_value
+      |> Enum.map(fn p ->
+        {name, value} = p
+        create_body_element(name, value)
+      end)
+    )
   end
 
   defp create_body_element(param_name, param_value) do
@@ -92,21 +108,27 @@ defmodule Soapex.Request do
     case parts do
       [part] ->
         IO.inspect(part)
-        # element_name = part.element
-        # _root_element = types.elements |> Enum.find(&(&1.name == element_name))
+
+      # element_name = part.element
+      # _root_element = types.elements |> Enum.find(&(&1.name == element_name))
       _ ->
-        throw "Only one message part is supported at the time for document style"
+        throw("Only one message part is supported at the time for document style")
     end
   end
 
   defp post(url, body, headers, data) do
-    case HTTPoison.post(url, body, headers, follow_redirect: true, max_redirect: 3, timeout: 10_000, recv_timeout: 20_000) do
-      {:ok,  %HTTPoison.Response{status_code: status_code} = response} when status_code == 200 ->
-        Logger.debug "Response (200) body: #{inspect(response.body)}"
+    case HTTPoison.post(url, body, headers,
+           follow_redirect: true,
+           max_redirect: 3,
+           timeout: 10_000,
+           recv_timeout: 20_000
+         ) do
+      {:ok, %HTTPoison.Response{status_code: status_code} = response} when status_code == 200 ->
+        Logger.debug("Response (200) body: #{inspect(response.body)}")
         {:ok, parse_success(response, data)}
 
       {:ok, %HTTPoison.Response{status_code: status_code} = response} when status_code >= 400 ->
-        Logger.error "Response body (> 400): #{inspect(response.body)}"
+        Logger.error("Response body (> 400): #{inspect(response.body)}")
         fault = parse_fault(response, data)
         {:fault, fault.name, fault.fault}
 
@@ -120,7 +142,9 @@ defmodule Soapex.Request do
 
   defp parse_success(response, data) do
     nss = get_response_nss(response, data)
-    body_el = response.body |> xpath(~x"//#{ns("Envelope", nss.env_ns)}/#{ns("Body", nss.env_ns)}/*[1]"e)
+
+    body_el =
+      response.body |> xpath(~x"//#{ns("Envelope", nss.env_ns)}/#{ns("Body", nss.env_ns)}/*[1]"e)
 
     %{
       body: element_to_data(body_el, nss)
@@ -129,9 +153,11 @@ defmodule Soapex.Request do
 
   def element_to_data(body_el, nss) do
     el_name = body_el |> xpath(~x"local-name(.)"os)
-    children = body_el
-               |> xpath(~x"./*"l)
-               |> Enum.map(fn el -> element_to_data(el, nss) end)
+
+    children =
+      body_el
+      |> xpath(~x"./*"l)
+      |> Enum.map(fn el -> element_to_data(el, nss) end)
 
     value = body_el |> xpath(~x"./text()"s)
 
@@ -144,10 +170,13 @@ defmodule Soapex.Request do
     case {children, value, is_nil} do
       {[], "", true} ->
         nil
+
       {[], "", false} ->
         ""
+
       {[], _, _} ->
         value
+
       {_, _, _} ->
         children
     end
@@ -157,6 +186,7 @@ defmodule Soapex.Request do
     case get_response_nss(response, data) do
       %{env11_ns: env11_ns, env12_ns: nil, op_ns: op_ns} ->
         parse_fault_soap11(env11_ns, response.body, op_ns)
+
       %{env11_ns: nil, env12_ns: env12_ns, op_ns: op_ns} ->
         parse_fault_soap12(env12_ns, response.body, op_ns)
     end
@@ -164,48 +194,55 @@ defmodule Soapex.Request do
 
   defp get_response_nss(response, data) do
     namespaces = response.body |> xpath(~x"//namespace::*"l)
+
     nss = %{
-      env11_ns:   get_schema_prefix(namespaces, "http://schemas.xmlsoap.org/soap/envelope/"),
-      env12_ns:   get_schema_prefix(namespaces, "http://www.w3.org/2003/05/soap-envelop"),
-      schema_ns:  get_schema_prefix(namespaces, "http://www.w3.org/2001/XMLSchema-instance"),
-      op_ns:      get_schema_prefix(namespaces, data.operation.output_message_ns)
+      env11_ns: get_schema_prefix(namespaces, "http://schemas.xmlsoap.org/soap/envelope/"),
+      env12_ns: get_schema_prefix(namespaces, "http://www.w3.org/2003/05/soap-envelop"),
+      schema_ns: get_schema_prefix(namespaces, "http://www.w3.org/2001/XMLSchema-instance"),
+      op_ns: get_schema_prefix(namespaces, data.operation.output_message_ns)
     }
-    env_ns = case nss.env11_ns do
-                nil -> nss.env12_ns
-                _ ->  nss.env11_ns
-             end
+
+    env_ns =
+      case nss.env11_ns do
+        nil -> nss.env12_ns
+        _ -> nss.env11_ns
+      end
 
     Map.put_new(nss, :env_ns, env_ns)
   end
 
   defp parse_fault_soap11(env_ns, response, _op_ns) do
-    fault = response |> xpath(~x"//#{ns("Envelope", env_ns)}/#{ns("Body", env_ns)}/#{ns("Fault", env_ns)}"e,
-                    code:   ~x"./faultcode/text()"s,
-                    string: ~x"./faultstring/text()"s,
-                    actor:  ~x"./faultactor/text()"s,
-                    detail: ~x"./detail/*[1]"e,
-                    fault:  ~x"local-name(./detail/*[1])"s)
+    fault =
+      response
+      |> xpath(~x"//#{ns("Envelope", env_ns)}/#{ns("Body", env_ns)}/#{ns("Fault", env_ns)}"e,
+        code: ~x"./faultcode/text()"s,
+        string: ~x"./faultstring/text()"s,
+        actor: ~x"./faultactor/text()"s,
+        detail: ~x"./detail/*[1]"e,
+        fault: ~x"local-name(./detail/*[1])"s
+      )
+
     %{
-      name:   String.to_atom(Macro.underscore(fault.fault)),
-      fault:  fault
+      name: String.to_atom(Macro.underscore(fault.fault)),
+      fault: fault
     }
   end
 
   defp parse_fault_soap12(_env_ns, _response, _op_ns) do
-    throw "soap_12 fault parsing not available yet"
+    throw("soap_12 fault parsing not available yet")
   end
 end
 
-#<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:blz="http://thomas-bayer.com/blz/">
+# <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:blz="http://thomas-bayer.com/blz/">
 #   <soap:Header/>
 #   <soap:Body>
 #      <blz:getBank>
 #         <blz:blz>50010517</blz:blz>
 #      </blz:getBank>
 #   </soap:Body>
-#</soap:Envelope>
+# </soap:Envelope>
 
-#<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://www.zasilkovna.cz/api/soap.wsdl">
+# <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://www.zasilkovna.cz/api/soap.wsdl">
 #   <SOAP-ENV:Body>
 #      <SOAP-ENV:Fault>
 #         <faultcode>SOAP-ENV:Client</faultcode>
@@ -216,9 +253,9 @@ end
 #         </detail>
 #      </SOAP-ENV:Fault>
 #   </SOAP-ENV:Body>
-#</SOAP-ENV:Envelope>
+# </SOAP-ENV:Envelope>
 
-#<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://www.zasilkovna.cz/api/soap.wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+# <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://www.zasilkovna.cz/api/soap.wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 #   <SOAP-ENV:Body>
 #      <ns1:packetStatusResponse>
 #         <packetStatusResult>
@@ -234,4 +271,4 @@ end
 #         </packetStatusResult>
 #      </ns1:packetStatusResponse>
 #   </SOAP-ENV:Body>
-#</SOAP-ENV:Envelope>
+# </SOAP-ENV:Envelope>

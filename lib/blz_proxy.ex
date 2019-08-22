@@ -1,7 +1,7 @@
-#defmodule BlzProxy do
+# defmodule BlzProxy do
 #  @moduledoc false
 #
 #  use Soapex.Proxy,
 #      wsdl_path: "./samples/blz.wsdl"
 #
-#end
+# end

@@ -6,7 +6,4 @@ defmodule XsdTest do
   test "simple schema parser" do
     assert :world == :world
   end
-
-
-
 end

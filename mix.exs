@@ -24,7 +24,6 @@ defmodule Soapex.MixProject do
       {:sweet_xml, "~> 0.6.5"},
       {:httpoison, "~> 1.5"},
       {:xml_builder, "~> 2.1"},
-
       {:dialyxir, "~> 0.5", only: [:dev], runtime: false}
     ]
   end

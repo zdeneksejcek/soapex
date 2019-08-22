@@ -6,8 +6,8 @@ defmodule Soapex.Fetcher do
 
   @spec get_files(String.t()) :: Map.t()
   def get_files(path) do
-    wsdl_root =       get_root(path)
-    parsed_imports =  get_imports(wsdl_root)
+    wsdl_root = get_root(path)
+    parsed_imports = get_imports(wsdl_root)
 
     {:ok, %{wsdl: wsdl_root, imports: parsed_imports}}
   end
@@ -15,11 +15,13 @@ defmodule Soapex.Fetcher do
   defp get_imports(wsdl_root) do
     wsdl_root
     |> ns_xpath(~x"//wsdl:definitions/wsdl:types/xsd:schema/xsd:import"l)
-    |> Enum.map(fn el -> ns_xpath(el, ~x".",
-                    namespace: ~x"./@namespace"s,
-                    schema_location: ~x"./@schemaLocation"s |> transform_by(&to_nil/1)
-                  )end)
-    |> Enum.reject(fn p->p.schema_location == nil end)
+    |> Enum.map(fn el ->
+      ns_xpath(el, ~x".",
+        namespace: ~x"./@namespace"s,
+        schema_location: ~x"./@schemaLocation"s |> transform_by(&to_nil/1)
+      )
+    end)
+    |> Enum.reject(fn p -> p.schema_location == nil end)
     |> Enum.map(&fetch_import/1)
   end
 
@@ -28,7 +30,7 @@ defmodule Soapex.Fetcher do
 
     Map.merge(import, %{
       content: get_root(path)
-    });
+    })
   end
 
   defp valid_url?(url) do
@@ -42,12 +44,14 @@ defmodule Soapex.Fetcher do
   defp get_root(path) do
     case valid_url?(path) do
       {:ok, url} ->
-        %HTTPoison.Response{body: wsdl} = HTTPoison.get!(url, [], follow_redirect: true, max_redirect: 3)
+        %HTTPoison.Response{body: wsdl} =
+          HTTPoison.get!(url, [], follow_redirect: true, max_redirect: 3)
+
         wsdl |> parse(namespace_conformant: true)
+
       {:error, _} ->
         {:ok, wsdl} = File.read(path)
         wsdl |> parse(namespace_conformant: true)
     end
   end
-
 end

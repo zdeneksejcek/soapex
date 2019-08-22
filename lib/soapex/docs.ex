@@ -2,9 +2,10 @@ defmodule Soapex.Docs do
   @moduledoc false
 
   def faults(op) do
-    faults = op.faults
-             |> Enum.map(fn f -> "- *#{Macro.underscore(f.name)}*" end)
-             |> Enum.join(" \n")
+    faults =
+      op.faults
+      |> Enum.map(fn f -> "- *#{Macro.underscore(f.name)}*" end)
+      |> Enum.join(" \n")
 
     faults
   end
@@ -21,6 +22,7 @@ defmodule Soapex.Docs do
     case part[:type] do
       type when is_atom(type) ->
         type
+
       _ ->
         ""
     end
