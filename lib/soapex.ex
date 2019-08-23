@@ -14,6 +14,72 @@ defmodule Soapex do
     Enum.each(info, &IO.inspect/1)
   end
 
+  def test() do
+    password = "db27c2f27c05508daecbd82cf69902f3"
+
+    atts = %{
+      "addressId" => 13,
+      "adultContent" => 0,
+      "city" => "Caslav",
+      "cod" => "100",
+      "company" => nil,
+      "currency" => "CZK",
+      "customsDeclaration" => %{
+        "deliveryCost" => "45",
+        "deliveryCostEur" => "3",
+        "items" => [
+          {"item",
+           %{
+             countryOfOrigin: "Czech Republic",
+             currency: "CZK",
+             customsCode: "1040123456789",
+             invoiceIssueDate: "20.8.2019",
+             invoiceNumber: "123",
+             isFoodBook: false,
+             isVoc: false,
+             productEan: "1040123456789",
+             productName: "Hracka",
+             productNameEn: "Toy",
+             unitsCount: "1",
+             value: "100",
+             valueEur: "4",
+             weight: "700.0"
+           }},
+          {"item",
+           %{
+             countryOfOrigin: "Czech Republic",
+             currency: "CZK",
+             customsCode: "0123456789104",
+             invoiceIssueDate: "20.8.2019",
+             invoiceNumber: "123",
+             isFoodBook: false,
+             isVoc: false,
+             productEan: "0123456789104",
+             productName: "Hracka",
+             productNameEn: "Toy",
+             unitsCount: "1",
+             value: "100",
+             valueEur: "4",
+             weight: "500.0"
+           }}
+        ]
+      },
+      "email" => "zdenek@sejcek.cz",
+      "eshop" => "mujshop",
+      "houseNumber" => "1244",
+      "name" => "Zdenek",
+      "number" => "O39",
+      "phone" => "731 920 084",
+      "street" => "Dusikova",
+      "surname" => "Sejcek",
+      "value" => "100",
+      "weight" => "3",
+      "zip" => "28601"
+    }
+
+    PacketeryProxy.create_packet(PacketeryProxy.packetery_port(), password, atts)
+  end
+
   def call() do
     wsdl = Wsdl.get_wsdl("./samples/packetery.wsdl")
     info = Info.get_operations(wsdl)

@@ -16,6 +16,8 @@ defmodule Soapex.Request do
 
     # {envelope, headers}
     Logger.debug("Request body: #{inspect(envelope)}")
+
+    # IO.inspect(body |> generate)
     post(data.url, envelope, headers, data)
   end
 
@@ -86,7 +88,16 @@ defmodule Soapex.Request do
     ])
   end
 
+  defp create_body_element(param_name, param_value) when is_list(param_value) do
+    elements =
+      param_value
+      |> Enum.map(fn {name, value} -> create_body_element(name, value) end)
+
+    element(param_name, nil, elements)
+  end
+
   defp create_body_element(param_name, param_value) when is_map(param_value) do
+    # IO.inspect(param_value)
     element(
       param_name,
       nil,
