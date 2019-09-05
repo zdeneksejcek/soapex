@@ -29,6 +29,7 @@ defmodule Soapex.Wsdl do
       port_types: get_port_types(files.wsdl),
       messages: get_messages(files.wsdl),
       schemes: get_schemes(files.wsdl, files.imports)
+      #nss: get_wsdl_namespaces(files.wsdl)
     }
   end
 
@@ -43,6 +44,11 @@ defmodule Soapex.Wsdl do
       |> Enum.map(fn im -> Xsd.get_schema(im.content) end)
 
     [local_schema | imported_schemas]
+    |> remove_empty_schemas
+  end
+
+  defp remove_empty_schemas(schemas) do
+    schemas
   end
 
   defp get_messages(wsdl) do
@@ -56,19 +62,31 @@ defmodule Soapex.Wsdl do
     end)
   end
 
+  defp get_element_namespaces(nss) do
+    nss
+    |> Enum.map(fn {:xmlNsNode, _, _, short, uri} ->
+      {"#{short}", "#{uri}"}
+    end)
+    |> Enum.into(%{})
+  end
+
   defp get_message_parts(message) do
     parts =
       message
       |> ns_xpath(~x"//wsdl:part"l,
         name: ~x"./@name"s,
-        element: ~x"./@element"s,
-        type: ~x"./@type"s
+        element: ~x"./@element"s |> transform_by(&type/1),
+        element_uri: ~x"./@element"s |> transform_by(&get_ns/1),
+        type: ~x"./@type"s |> transform_by(&type/1),
+        type_uri: ~x"./@type"s |> transform_by(&get_ns/1),
+        nss: ~x"./namespace::*"l |> transform_by(&get_element_namespaces/1)
       )
 
     parts
-    |> Enum.map(fn p ->
-      Map.put(p, :type, type(p[:type]))
-      |> Map.put(:element, type(p[:element]))
+    |> Enum.map(fn part ->
+      Map.put(part, :element_uri, part[:nss][part[:element_uri]])
+      |> Map.put(:type_uri, part[:nss][part[:type_uri]])
+      |> Map.delete(:nss)
     end)
     |> Enum.map(&no_nil_or_empty_value/1)
   end

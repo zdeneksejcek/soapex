@@ -17,7 +17,6 @@ defmodule Soapex.Request do
     # {envelope, headers}
     Logger.debug("Request body: #{inspect(envelope)}")
 
-    # IO.inspect(body |> generate)
     post(data.url, envelope, headers, data)
   end
 
@@ -61,7 +60,7 @@ defmodule Soapex.Request do
     _doc =
       element(
         "env:Envelope",
-        %{"xmlns:env" => env_ns_url, "xmlns:s" => data.operation.input_message_ns},
+        %{"xmlns:env" => env_ns_url, "xmlns:s" => data.operation.input_message_ns} |> no_nil_or_empty_value,
         [
           element("env:Body", [
             body
@@ -97,7 +96,6 @@ defmodule Soapex.Request do
   end
 
   defp create_body_element(param_name, param_value) when is_map(param_value) do
-    # IO.inspect(param_value)
     element(
       param_name,
       nil,
@@ -113,15 +111,16 @@ defmodule Soapex.Request do
     element(param_name, param_value)
   end
 
-  defp create_body_document(op, _parameters, _schemas) do
+  defp create_body_document(op, parameters, _schemas) do
     parts = op.input_message.parts
-
     case parts do
       [part] ->
-        IO.inspect(part)
-
-      # element_name = part.element
-      # _root_element = types.elements |> Enum.find(&(&1.name == element_name))
+        element(
+          "operation:#{part[:element]}",
+          %{"xmlns:operation" => part[:element_uri]},
+          [parameters["parameters"]
+           |> Enum.map(fn {key, value} -> create_body_element(key, value) end)]
+        )
       _ ->
         throw("Only one message part is supported at the time for document style")
     end
@@ -195,11 +194,11 @@ defmodule Soapex.Request do
 
   defp parse_fault(response, data) do
     case get_response_nss(response, data) do
-      %{env11_ns: env11_ns, env12_ns: nil, op_ns: op_ns} ->
-        parse_fault_soap11(env11_ns, response.body, op_ns)
+      %{env11_ns: env11_ns, env12_ns: nil} ->
+        parse_fault_soap11(env11_ns, response.body)
 
-      %{env11_ns: nil, env12_ns: env12_ns, op_ns: op_ns} ->
-        parse_fault_soap12(env12_ns, response.body, op_ns)
+      %{env11_ns: nil, env12_ns: env12_ns} ->
+        parse_fault_soap12(env12_ns, response.body)
     end
   end
 
@@ -209,20 +208,20 @@ defmodule Soapex.Request do
     nss = %{
       env11_ns: get_schema_prefix(namespaces, "http://schemas.xmlsoap.org/soap/envelope/"),
       env12_ns: get_schema_prefix(namespaces, "http://www.w3.org/2003/05/soap-envelop"),
-      schema_ns: get_schema_prefix(namespaces, "http://www.w3.org/2001/XMLSchema-instance"),
-      op_ns: get_schema_prefix(namespaces, data.operation.output_message_ns)
+      schema_ns: get_schema_prefix(namespaces, "http://www.w3.org/2001/XMLSchema-instance")
     }
 
     env_ns =
       case nss.env11_ns do
         nil -> nss.env12_ns
+
         _ -> nss.env11_ns
       end
 
     Map.put_new(nss, :env_ns, env_ns)
   end
 
-  defp parse_fault_soap11(env_ns, response, _op_ns) do
+  defp parse_fault_soap11(env_ns, response) do
     fault =
       response
       |> xpath(~x"//#{ns("Envelope", env_ns)}/#{ns("Body", env_ns)}/#{ns("Fault", env_ns)}"e,
@@ -230,8 +229,9 @@ defmodule Soapex.Request do
         string: ~x"./faultstring/text()"s,
         actor: ~x"./faultactor/text()"s,
         detail: ~x"./detail/*[1]"e,
-        fault: ~x"local-name(./detail/*[1])"s
+        fault: ~x"local-name(./detail/*[1])"s,
       )
+      |> append_specific_detail_soap11()
 
     %{
       name: String.to_atom(Macro.underscore(fault.fault)),
@@ -239,47 +239,13 @@ defmodule Soapex.Request do
     }
   end
 
-  defp parse_fault_soap12(_env_ns, _response, _op_ns) do
+  defp append_specific_detail_soap11(map) do
+    detail = map[:detail]
+
+    Map.put_new(map, :specific, nil)
+  end
+
+  defp parse_fault_soap12(_env_ns, _response) do
     throw("soap_12 fault parsing not available yet")
   end
 end
-
-# <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:blz="http://thomas-bayer.com/blz/">
-#   <soap:Header/>
-#   <soap:Body>
-#      <blz:getBank>
-#         <blz:blz>50010517</blz:blz>
-#      </blz:getBank>
-#   </soap:Body>
-# </soap:Envelope>
-
-# <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://www.zasilkovna.cz/api/soap.wsdl">
-#   <SOAP-ENV:Body>
-#      <SOAP-ENV:Fault>
-#         <faultcode>SOAP-ENV:Client</faultcode>
-#         <faultstring>Incorrect API password.</faultstring>
-#         <faultactor>http://www.zasilkovna.cz/api/soap</faultactor>
-#         <detail>
-#            <ns1:IncorrectApiPasswordFault/>
-#         </detail>
-#      </SOAP-ENV:Fault>
-#   </SOAP-ENV:Body>
-# </SOAP-ENV:Envelope>
-
-# <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://www.zasilkovna.cz/api/soap.wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-#   <SOAP-ENV:Body>
-#      <ns1:packetStatusResponse>
-#         <packetStatusResult>
-#            <ns1:dateTime>2019-01-28T10:24:13</ns1:dateTime>
-#            <ns1:statusCode>1</ns1:statusCode>
-#            <ns1:codeText>received data</ns1:codeText>
-#            <ns1:statusText>Internetový obchod předal informace o zásilce.</ns1:statusText>
-#            <ns1:branchId>0</ns1:branchId>
-#            <ns1:destinationBranchId>0</ns1:destinationBranchId>
-#            <ns1:externalTrackingCode xsi:nil="true"/>
-#            <ns1:isReturning>false</ns1:isReturning>
-#            <ns1:storedUntil xsi:nil="true"/>
-#         </packetStatusResult>
-#      </ns1:packetStatusResponse>
-#   </SOAP-ENV:Body>
-# </SOAP-ENV:Envelope>

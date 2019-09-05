@@ -13,7 +13,7 @@ defmodule Soapex.Xsd do
 
   defp get_schema_internal(schema_el) do
     %{
-      target_ns: schema_el |> ns_xpath(~x"@targetNamespace"so),
+      target_ns: schema_el |> ns_xpath(~x"@targetNamespace"so) || schema_el |> ns_xpath(~x"@namespace"so),
       attribute_form_default: get_qualified_unqualified(schema_el, "attributeFormDefault"),
       element_form_default: get_qualified_unqualified(schema_el, "elementFormDefault"),
       elements: get_elements(schema_el),

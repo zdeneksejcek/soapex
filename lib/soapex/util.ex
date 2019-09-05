@@ -87,6 +87,18 @@ defmodule Soapex.Util do
   def type(""), do: nil
   def type(nil), do: nil
 
+  def get_ns(nil), do: nil
+  def get_ns(""), do: nil
+  def get_ns(value) when is_binary(value) do
+    case String.split(value, ":") do
+      [ns, _rest] ->
+        ns
+
+      _ ->
+        nil
+    end
+  end
+
   def type(value) do
     case String.split(value, ":") do
       [_, b_type] ->
