@@ -7,8 +7,8 @@ defmodule Soapex.Request do
 
   require Logger
 
-  def create_request(t_wsdl, wsdl, port_path, operation_name, parameters) do
-    data = get_operation(t_wsdl, port_path, operation_name)
+  def create_request(t_wsdl, wsdl, port_path, operation_name, parameters, opts \\ nil) do
+    data = get_operation(t_wsdl, port_path, operation_name, opts)
 
     body = create_body(data.operation, parameters, wsdl.schemes)
     envelope = create_envelope(data, body)
@@ -20,12 +20,12 @@ defmodule Soapex.Request do
     post(data.url, envelope, headers, data)
   end
 
-  defp get_operation(t_wsdl, {service, port}, operation) do
+  defp get_operation(t_wsdl, {service, port}, operation, opts \\ nil) do
     service = t_wsdl[service]
     port = service[port]
 
     %{
-      url: port.location,
+      url: Keyword.get(opts, :url, port.location),
       operation: port.operations[operation],
       protocol: port.protocol
     }

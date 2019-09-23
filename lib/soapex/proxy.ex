@@ -38,12 +38,12 @@ defmodule Soapex.Proxy do
             def unquote(:"#{Macro.underscore(op_name)}")(
                   {unquote(Macro.escape(service_name)), unquote(Macro.escape(port_name))} =
                     port_path,
-                  unquote_splicing(params)
+                  unquote_splicing(params), opts \\ nil
                 ) do
               operation_name = unquote(op_name)
               params_map = unquote(params_list) |> Enum.into(%{})
 
-              Soapex.Request.create_request(@t_wsdl, @wsdl, port_path, operation_name, params_map)
+              Soapex.Request.create_request(@t_wsdl, @wsdl, port_path, operation_name, params_map, opts)
             end
           end)
         end)

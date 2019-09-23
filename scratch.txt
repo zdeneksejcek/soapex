@@ -2,5 +2,3 @@ soapex
 ******
 
 :erlang.system_flag(:backtrace_depth, 20)
-
-https://www.primotorbike.com/triumph-tiger-800-xcx-2019-e62881.htm
