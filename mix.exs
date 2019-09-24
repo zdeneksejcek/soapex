@@ -4,7 +4,7 @@ defmodule Soapex.MixProject do
   def project do
     [
       app: :soapex,
-      version: "0.1.5",
+      version: "0.1.6",
       elixir: "~> 1.8",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -16,7 +16,7 @@ defmodule Soapex.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger]
+      extra_applications: [:logger, :dumpster]
     ]
   end
 
@@ -26,7 +26,8 @@ defmodule Soapex.MixProject do
       {:sweet_xml, "~> 0.6.5"},
       {:httpoison, "~> 1.5"},
       {:xml_builder, "~> 2.1"},
-      {:dialyxir, "~> 0.5", only: [:dev], runtime: false}
+      {:dialyxir, "~> 0.5", only: [:dev], runtime: false},
+      {:dumpster, "~> 0.0.1"}
     ]
   end
 

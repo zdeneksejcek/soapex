@@ -127,6 +127,7 @@ defmodule Soapex.Request do
   end
 
   defp post(url, body, headers, data) do
+    Dumpster.dump(body)
     case HTTPoison.post(url, body, headers,
            follow_redirect: true,
            max_redirect: 3,
@@ -135,10 +136,12 @@ defmodule Soapex.Request do
          ) do
       {:ok, %HTTPoison.Response{status_code: status_code} = response} when status_code == 200 ->
         Logger.debug("Response (200) body: #{inspect(response.body)}")
+        Dumpster.dump(response.body)
         {:ok, parse_success(response, data)}
 
       {:ok, %HTTPoison.Response{status_code: status_code} = response} when status_code >= 400 ->
         Logger.error("Response body (> 400): #{inspect(response.body)}")
+        Dumpster.dump(response.body)
         fault = parse_fault(response, data)
         {:fault, fault.name, fault.fault}
 
@@ -248,4 +251,5 @@ defmodule Soapex.Request do
   defp parse_fault_soap12(_env_ns, _response) do
     throw("soap_12 fault parsing not available yet")
   end
+
 end
