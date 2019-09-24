@@ -27,7 +27,8 @@ defmodule Soapex.MixProject do
       {:httpoison, "~> 1.5"},
       {:xml_builder, "~> 2.1"},
       {:dialyxir, "~> 0.5", only: [:dev], runtime: false},
-      {:dumpster, "~> 0.0.1"}
+    
+      {:dumpster, "~> 1.0.0"}
     ]
   end
 
