@@ -4,7 +4,7 @@ defmodule Soapex.MixProject do
   def project do
     [
       app: :soapex,
-      version: "0.1.6",
+      version: "0.1.7",
       elixir: "~> 1.8",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -27,7 +27,7 @@ defmodule Soapex.MixProject do
       {:httpoison, "~> 1.5"},
       {:xml_builder, "~> 2.1"},
       {:dialyxir, "~> 0.5", only: [:dev], runtime: false},
-    
+
       {:dumpster, "~> 1.0.0"}
     ]
   end
