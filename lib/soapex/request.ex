@@ -7,6 +7,8 @@ defmodule Soapex.Request do
 
   require Logger
 
+  @http_adapter Application.get_env(:soapex, :http_adapter)
+
   def create_request(t_wsdl, wsdl, port_path, operation_name, parameters, opts \\ nil) do
     data = get_operation(t_wsdl, port_path, operation_name, opts)
 
@@ -128,7 +130,7 @@ defmodule Soapex.Request do
 
   defp post(url, body, headers, data) do
     Dumpster.dump(body)
-    case HTTPoison.post(url, body, headers,
+    case @http_adapter.post(url, body, headers,
            follow_redirect: true,
            max_redirect: 3,
            timeout: 10_000,
