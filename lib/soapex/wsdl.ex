@@ -126,6 +126,7 @@ defmodule Soapex.Wsdl do
   end
 
   defp get_style(nil), do: nil
+  defp get_style(""), do: nil
   defp get_style("rpc"), do: :rpc
   defp get_style("document"), do: :document
 
