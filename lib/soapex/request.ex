@@ -113,16 +113,40 @@ defmodule Soapex.Request do
     element(param_name, param_value)
   end
 
-  defp create_body_document(op, parameters, _schemas) do
+  defp create_body_document(op, %{"parameters" => elements} = parameters, _schemas)
+       when is_tuple(elements) do
     parts = op.input_message.parts
+
     case parts do
       [part] ->
         element(
           "operation:#{part[:element]}",
           %{"xmlns:operation" => part[:element_uri]},
-          [parameters["parameters"]
-           |> Enum.map(fn {key, value} -> create_body_element(key, value) end)]
+          [
+            parameters["parameters"]
+          ]
         )
+
+      _ ->
+        throw("Only one message part is supported at the time for document style")
+    end
+  end
+
+  defp create_body_document(op, %{"parameters" => elements} = parameters, _schemas)
+       when is_map(elements) do
+    parts = op.input_message.parts
+
+    case parts do
+      [part] ->
+        element(
+          "operation:#{part[:element]}",
+          %{"xmlns:operation" => part[:element_uri]},
+          [
+            parameters["parameters"]
+            |> Enum.map(fn {key, value} -> create_body_element(key, value) end)
+          ]
+        )
+
       _ ->
         throw("Only one message part is supported at the time for document style")
     end
