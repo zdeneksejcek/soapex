@@ -29,7 +29,7 @@ defmodule Soapex.Wsdl do
       port_types: get_port_types(files.wsdl),
       messages: get_messages(files.wsdl),
       schemes: get_schemes(files.wsdl, files.imports)
-      #nss: get_wsdl_namespaces(files.wsdl)
+      # nss: get_wsdl_namespaces(files.wsdl)
     }
   end
 
@@ -113,9 +113,25 @@ defmodule Soapex.Wsdl do
       |> ns_xpath(~x"./wsdl:operation"l)
       |> Enum.map(fn p -> get_binding_operation(p) end)
 
+    # Update style, from operations directly if needed
+    soap =
+      case soap[:style] do
+        "" ->
+          style =
+            case Enum.at(operations, 0) do
+              nil -> nil
+              op -> op[:style]
+            end
+
+          Map.put(soap, :style, style)
+
+        val ->
+          Map.put(soap, :style, get_style(soap[:style]))
+      end
+
     Map.merge(binding, %{
       operations: operations,
-      soap: soap |> update_style
+      soap: soap
     })
   end
 
@@ -126,6 +142,7 @@ defmodule Soapex.Wsdl do
   end
 
   defp get_style(nil), do: nil
+  defp get_style(""), do: nil
   defp get_style("rpc"), do: :rpc
   defp get_style("document"), do: :document
 
@@ -135,6 +152,8 @@ defmodule Soapex.Wsdl do
     soap_action =
       op_el |> ns_xpath(~x"./soap11:operation/@soapAction | ./soap12:operation/@soapAction"os)
 
+    style = op_el |> ns_xpath(~x"./soap11:operation/@style | ./soap12:operation/@style"os)
+
     input = get_operation_body(op_el, "input")
     output = get_operation_body(op_el, "output")
 
@@ -142,6 +161,7 @@ defmodule Soapex.Wsdl do
     output_header = get_operation_header(op_el, "output")
 
     Map.merge(operation, %{
+      style: get_style(style),
       soap_action: soap_action,
       input: input,
       input_header: input_header,
