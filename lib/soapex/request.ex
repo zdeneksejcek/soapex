@@ -151,6 +151,15 @@ defmodule Soapex.Request do
         throw("Only one message part is supported at the time for document style")
     end
   end
+  
+  # When parameters are not under "parameters" key, but under
+  # op.input_message.name. This is a hotfix rather than proper
+  # solution.
+  defp create_body_document(op, parameters, schemas) do
+    params_identifier = op.input_message.name
+
+    create_body_document(op, %{"parameters" => parameters[params_identifier]}, schemas)
+  end
 
   defp post(url, body, headers, data) do
     Dumpster.dump(body)
