@@ -113,6 +113,8 @@ defmodule Soapex.Request do
     element(param_name, param_value)
   end
   
+  # We are skipping the operation: namespace for Fedex,
+  # this should be made configurable in the future.
   defp create_body_document(op, %{"parameters" => elements} = parameters, _schemas)
        when is_list(elements) do
     parts = op.input_message.parts
@@ -120,8 +122,8 @@ defmodule Soapex.Request do
     case parts do
       [part] ->
         element(
-          "operation:#{part[:element]}",
-          %{"xmlns:operation" => part[:element_uri]},
+          "#{part[:element]}",
+          %{"xmlns" => part[:element_uri]},
           parameters["parameters"]
         )
 
