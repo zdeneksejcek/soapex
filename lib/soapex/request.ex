@@ -112,6 +112,23 @@ defmodule Soapex.Request do
   defp create_body_element(param_name, param_value) do
     element(param_name, param_value)
   end
+  
+  defp create_body_document(op, %{"parameters" => elements} = parameters, _schemas)
+       when is_list(elements) do
+    parts = op.input_message.parts
+
+    case parts do
+      [part] ->
+        element(
+          "operation:#{part[:element]}",
+          %{"xmlns:operation" => part[:element_uri]},
+          parameters["parameters"]
+        )
+
+      _ ->
+        throw("Only one message part is supported at the time for document style")
+    end
+  end
 
   defp create_body_document(op, %{"parameters" => elements} = parameters, _schemas)
        when is_tuple(elements) do
