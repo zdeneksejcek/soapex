@@ -7,7 +7,9 @@ defmodule Soapex.Request do
 
   require Logger
 
-  @http_adapter Application.get_env(:soapex, :http_adapter)
+  def http_adapter do
+    Application.get_env(:soapex, :http_adapter) || HTTPoison
+  end
 
   def create_request(t_wsdl, wsdl, port_path, operation_name, parameters, opts \\ nil) do
     data = get_operation(t_wsdl, port_path, operation_name, opts)
@@ -62,7 +64,8 @@ defmodule Soapex.Request do
     _doc =
       element(
         "env:Envelope",
-        %{"xmlns:env" => env_ns_url, "xmlns:s" => data.operation.input_message_ns} |> no_nil_or_empty_value,
+        %{"xmlns:env" => env_ns_url, "xmlns:s" => data.operation.input_message_ns}
+        |> no_nil_or_empty_value,
         [
           element("env:Body", [
             body
@@ -112,7 +115,7 @@ defmodule Soapex.Request do
   defp create_body_element(param_name, param_value) do
     element(param_name, param_value)
   end
-  
+
   # We are skipping the operation: namespace for Fedex,
   # this should be made configurable in the future.
   defp create_body_document(op, %{"parameters" => elements} = parameters, _schemas)
@@ -170,7 +173,7 @@ defmodule Soapex.Request do
         throw("Only one message part is supported at the time for document style")
     end
   end
-  
+
   # When parameters are not under "parameters" key, but under
   # op.input_message.name. This is a hotfix rather than proper
   # solution.
@@ -182,7 +185,8 @@ defmodule Soapex.Request do
 
   defp post(url, body, headers, data) do
     Dumpster.dump(body)
-    case @http_adapter.post(url, body, headers,
+
+    case http_adapter.post(url, body, headers,
            follow_redirect: true,
            max_redirect: 3,
            timeout: 10_000,
@@ -271,7 +275,6 @@ defmodule Soapex.Request do
     env_ns =
       case nss.env11_ns do
         nil -> nss.env12_ns
-
         _ -> nss.env11_ns
       end
 
@@ -286,7 +289,7 @@ defmodule Soapex.Request do
         string: ~x"./faultstring/text()"s,
         actor: ~x"./faultactor/text()"s,
         detail: ~x"./detail/*[1]"e,
-        fault: ~x"local-name(./detail/*[1])"s,
+        fault: ~x"local-name(./detail/*[1])"s
       )
       |> append_specific_detail_soap11()
 
@@ -305,5 +308,4 @@ defmodule Soapex.Request do
   defp parse_fault_soap12(_env_ns, _response) do
     throw("soap_12 fault parsing not available yet")
   end
-
 end
