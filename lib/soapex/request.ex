@@ -11,7 +11,7 @@ defmodule Soapex.Request do
     Application.get_env(:soapex, :http_adapter) || HTTPoison
   end
 
-  def create_request(t_wsdl, wsdl, port_path, operation_name, parameters, opts \\ nil) do
+  def create_request(t_wsdl, wsdl, port_path, operation_name, parameters, opts \\ []) do
     data = get_operation(t_wsdl, port_path, operation_name, opts)
 
     body = create_body(data.operation, parameters, wsdl.schemes)
@@ -21,10 +21,10 @@ defmodule Soapex.Request do
     # {envelope, headers}
     Logger.debug("Request body: #{inspect(envelope)}")
 
-    post(data.url, envelope, headers, data)
+    post(data.url, envelope, headers, data, opts)
   end
 
-  defp get_operation(t_wsdl, {service, port}, operation, opts \\ nil) do
+  defp get_operation(t_wsdl, {service, port}, operation, opts \\ []) do
     service = t_wsdl[service]
     port = service[port]
 
@@ -183,14 +183,15 @@ defmodule Soapex.Request do
     create_body_document(op, %{"parameters" => parameters[params_identifier]}, schemas)
   end
 
-  defp post(url, body, headers, data) do
+  defp post(url, body, headers, data, opts) do
     Dumpster.dump(body)
 
     case http_adapter.post(url, body, headers,
            follow_redirect: true,
            max_redirect: 3,
            timeout: 10_000,
-           recv_timeout: 20_000
+           recv_timeout: 20_000,
+           pool: Keyword.get(opts, :pool, :default)
          ) do
       {:ok, %HTTPoison.Response{status_code: status_code} = response} when status_code == 200 ->
         Logger.debug("Response (200) body: #{inspect(response.body)}")
