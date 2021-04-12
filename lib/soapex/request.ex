@@ -191,7 +191,8 @@ defmodule Soapex.Request do
            max_redirect: 3,
            timeout: 10_000,
            recv_timeout: 20_000,
-           pool: Keyword.get(opts, :pool, :default)
+           pool: Keyword.get(opts, :pool, :default),
+           hackney: [:insecure]
          ) do
       {:ok, %HTTPoison.Response{status_code: status_code} = response} when status_code == 200 ->
         Logger.debug("Response (200) body: #{inspect(response.body)}")
