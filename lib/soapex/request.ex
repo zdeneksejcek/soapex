@@ -7,9 +7,11 @@ defmodule Soapex.Request do
 
   require Logger
 
-  @http_adapter Application.get_env(:soapex, :http_adapter)
+  def http_adapter do
+    Application.get_env(:soapex, :http_adapter) || HTTPoison
+  end
 
-  def create_request(t_wsdl, wsdl, port_path, operation_name, parameters, opts \\ nil) do
+  def create_request(t_wsdl, wsdl, port_path, operation_name, parameters, opts \\ []) do
     data = get_operation(t_wsdl, port_path, operation_name, opts)
 
     body = create_body(data.operation, parameters, wsdl.schemes)
@@ -19,10 +21,10 @@ defmodule Soapex.Request do
     # {envelope, headers}
     Logger.debug("Request body: #{inspect(envelope)}")
 
-    post(data.url, envelope, headers, data)
+    post(data.url, envelope, headers, data, opts)
   end
 
-  defp get_operation(t_wsdl, {service, port}, operation, opts \\ nil) do
+  defp get_operation(t_wsdl, {service, port}, operation, opts \\ []) do
     service = t_wsdl[service]
     port = service[port]
 
@@ -62,7 +64,8 @@ defmodule Soapex.Request do
     _doc =
       element(
         "env:Envelope",
-        %{"xmlns:env" => env_ns_url, "xmlns:s" => data.operation.input_message_ns} |> no_nil_or_empty_value,
+        %{"xmlns:env" => env_ns_url, "xmlns:s" => data.operation.input_message_ns}
+        |> no_nil_or_empty_value,
         [
           element("env:Body", [
             body
@@ -113,28 +116,82 @@ defmodule Soapex.Request do
     element(param_name, param_value)
   end
 
-  defp create_body_document(op, parameters, _schemas) do
+  # We are skipping the operation: namespace for Fedex,
+  # this should be made configurable in the future.
+  defp create_body_document(op, %{"parameters" => elements} = parameters, _schemas)
+       when is_list(elements) do
     parts = op.input_message.parts
+
     case parts do
       [part] ->
         element(
-          "operation:#{part[:element]}",
-          %{"xmlns:operation" => part[:element_uri]},
-          [parameters["parameters"]
-           |> Enum.map(fn {key, value} -> create_body_element(key, value) end)]
+          "#{part[:element]}",
+          %{"xmlns" => part[:element_uri]},
+          parameters["parameters"]
         )
+
       _ ->
         throw("Only one message part is supported at the time for document style")
     end
   end
 
-  defp post(url, body, headers, data) do
+  defp create_body_document(op, %{"parameters" => elements} = parameters, _schemas)
+       when is_tuple(elements) do
+    parts = op.input_message.parts
+
+    case parts do
+      [part] ->
+        element(
+          "operation:#{part[:element]}",
+          %{"xmlns:operation" => part[:element_uri]},
+          [
+            parameters["parameters"]
+          ]
+        )
+
+      _ ->
+        throw("Only one message part is supported at the time for document style")
+    end
+  end
+
+  defp create_body_document(op, %{"parameters" => elements} = parameters, _schemas)
+       when is_map(elements) do
+    parts = op.input_message.parts
+
+    case parts do
+      [part] ->
+        element(
+          "operation:#{part[:element]}",
+          %{"xmlns:operation" => part[:element_uri]},
+          [
+            parameters["parameters"]
+            |> Enum.map(fn {key, value} -> create_body_element(key, value) end)
+          ]
+        )
+
+      _ ->
+        throw("Only one message part is supported at the time for document style")
+    end
+  end
+
+  # When parameters are not under "parameters" key, but under
+  # op.input_message.name. This is a hotfix rather than proper
+  # solution.
+  defp create_body_document(op, parameters, schemas) do
+    params_identifier = op.input_message.name
+
+    create_body_document(op, %{"parameters" => parameters[params_identifier]}, schemas)
+  end
+
+  defp post(url, body, headers, data, opts) do
     Dumpster.dump(body)
-    case @http_adapter.post(url, body, headers,
+
+    case http_adapter.post(url, body, headers,
            follow_redirect: true,
            max_redirect: 3,
            timeout: 10_000,
-           recv_timeout: 20_000
+           recv_timeout: 20_000,
+           pool: Keyword.get(opts, :pool, :default)
          ) do
       {:ok, %HTTPoison.Response{status_code: status_code} = response} when status_code == 200 ->
         Logger.debug("Response (200) body: #{inspect(response.body)}")
@@ -219,7 +276,6 @@ defmodule Soapex.Request do
     env_ns =
       case nss.env11_ns do
         nil -> nss.env12_ns
-
         _ -> nss.env11_ns
       end
 
@@ -234,7 +290,7 @@ defmodule Soapex.Request do
         string: ~x"./faultstring/text()"s,
         actor: ~x"./faultactor/text()"s,
         detail: ~x"./detail/*[1]"e,
-        fault: ~x"local-name(./detail/*[1])"s,
+        fault: ~x"local-name(./detail/*[1])"s
       )
       |> append_specific_detail_soap11()
 
@@ -253,5 +309,4 @@ defmodule Soapex.Request do
   defp parse_fault_soap12(_env_ns, _response) do
     throw("soap_12 fault parsing not available yet")
   end
-
 end
